@@ -1,0 +1,106 @@
+import "server-only";
+
+import { z } from "zod";
+
+import { generateEmbedding } from "@/lib/ai/embedding.service";
+import { generateAnswer } from "@/lib/ai/generation.service";
+import {
+  buildRagPrompt,
+  RAG_FALLBACK_MESSAGE,
+} from "@/lib/rag/build-rag-prompt";
+import { retrieveRelevantContext } from "@/lib/rag/retrieve-context";
+import { DEFAULT_SIMILARITY_THRESHOLD } from "@/features/documents/services/document-query.service";
+
+import type {
+  ChatResponse,
+  ChatSource,
+} from "@/features/chat/types/chat.types";
+import type { RetrievedDocumentChunk } from "@/features/documents/types/document.types";
+
+const questionSchema = z.string().trim().min(1).max(1000);
+
+export async function answerQuestion(
+  questionInput: unknown,
+): Promise<ChatResponse> {
+  const question = questionSchema.parse(questionInput);
+  const questionEmbedding = await generateEmbedding(question);
+  const chunks = await retrieveRelevantContext(questionEmbedding);
+
+  logRetrievalDebug({
+    question,
+    queryEmbeddingLength: questionEmbedding.length,
+    chunks,
+  });
+
+  if (chunks.length === 0) {
+    return {
+      answer: RAG_FALLBACK_MESSAGE,
+      sources: [],
+    };
+  }
+
+  const answer = await generateAnswer(buildRagPrompt(question, chunks));
+
+  return {
+    answer: answer || RAG_FALLBACK_MESSAGE,
+    sources: toUniqueSources(chunks),
+  };
+}
+
+type RetrievalDebugInput = {
+  question: string;
+  queryEmbeddingLength: number;
+  chunks: RetrievedDocumentChunk[];
+};
+
+function logRetrievalDebug({
+  question,
+  queryEmbeddingLength,
+  chunks,
+}: RetrievalDebugInput) {
+  if (process.env.NODE_ENV !== "development") {
+    return;
+  }
+
+  if (chunks.length === 0) {
+    console.info("[RAG retrieval] no chunks matched", {
+      question,
+      queryEmbeddingLength,
+      matchedChunks: 0,
+      similarityThreshold: DEFAULT_SIMILARITY_THRESHOLD,
+    });
+    return;
+  }
+
+  console.info("[RAG retrieval] matched chunks", {
+    question,
+    queryEmbeddingLength,
+    matchedChunks: chunks.length,
+    similarityThreshold: DEFAULT_SIMILARITY_THRESHOLD,
+    topSimilarities: chunks.map((chunk) => Number(chunk.similarity.toFixed(4))),
+    topSources: chunks.map((chunk) => ({
+      documentName: chunk.documentName,
+      source: chunk.source,
+      chunkIndex: chunk.chunkIndex,
+    })),
+  });
+}
+
+function toUniqueSources(chunks: RetrievedDocumentChunk[]): ChatSource[] {
+  const sourcesByDocument = new Map<string, ChatSource>();
+
+  for (const chunk of chunks) {
+    const existingSource = sourcesByDocument.get(chunk.documentId);
+
+    if (!existingSource || existingSource.similarity < chunk.similarity) {
+      sourcesByDocument.set(chunk.documentId, {
+        documentId: chunk.documentId,
+        documentName: chunk.documentName,
+        source: chunk.source,
+        similarity: chunk.similarity,
+      });
+    }
+  }
+
+  return Array.from(sourcesByDocument.values());
+}

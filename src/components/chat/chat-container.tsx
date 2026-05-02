@@ -8,6 +8,7 @@ import {
   ChatMessage,
   type ChatMessageModel,
 } from "@/components/chat/chat-message";
+import { SuggestedQuestions } from "@/components/chat/suggested-questions";
 import { Alert } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ChatResponse } from "@/features/chat/types/chat.types";
@@ -96,6 +97,7 @@ export function ChatContainer() {
           )}
         </section>
         {error && <Alert variant="destructive">{error}</Alert>}
+        <SuggestedQuestions disabled={isLoading} onSelect={submitQuestion} />
         <ChatInput disabled={isLoading} onSubmit={submitQuestion} />
       </CardContent>
     </Card>

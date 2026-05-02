@@ -23,8 +23,8 @@ export function DocumentList({ documents }: DocumentListProps) {
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium">{document.name}</p>
             <p className="text-xs text-muted-foreground">
-              {formatFileSize(document.sizeBytes)} ·{" "}
-              {new Date(document.createdAt).toLocaleString()}
+              {formatFileSize(document.sizeBytes)} · {document.chunkCount}{" "}
+              chunks · {new Date(document.createdAt).toLocaleString()}
             </p>
           </div>
         </li>

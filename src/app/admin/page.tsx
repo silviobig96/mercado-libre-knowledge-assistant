@@ -23,7 +23,9 @@ export default async function AdminPage() {
           <CardHeader>
             <CardTitle>Document Upload</CardTitle>
             <CardDescription>
-              Add one searchable PDF to the NovaRetail knowledge base.
+              Upload corporate policies, manuals, FAQs, warranty procedures,
+              logistics guides, and internal process documents. These documents
+              become searchable through the RAG assistant.
             </CardDescription>
           </CardHeader>
           <CardContent>

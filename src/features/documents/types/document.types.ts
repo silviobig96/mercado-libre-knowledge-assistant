@@ -4,6 +4,7 @@ export type DocumentRecord = {
   mimeType: string | null;
   sizeBytes: number | null;
   createdAt: string;
+  chunkCount: number;
 };
 
 export type DocumentChunkInsert = {

@@ -3,13 +3,16 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 type AppShellProps = {
-  active: "chat" | "admin";
+  active: "chat" | "admin" | "business-flow" | "architecture" | "evaluation";
   children: React.ReactNode;
 };
 
 const links = [
   { href: "/", label: "Chat", key: "chat" },
   { href: "/admin", label: "Admin", key: "admin" },
+  { href: "/business-flow", label: "Business Flow", key: "business-flow" },
+  { href: "/architecture", label: "Architecture", key: "architecture" },
+  { href: "/evaluation", label: "Evaluation", key: "evaluation" },
 ] as const;
 
 export function AppShell({ active, children }: AppShellProps) {
@@ -23,7 +26,7 @@ export function AppShell({ active, children }: AppShellProps) {
               AI Assistant
             </h1>
           </div>
-          <nav aria-label="Primary navigation" className="flex gap-2">
+          <nav aria-label="Primary navigation" className="flex flex-wrap gap-2">
             {links.map((link) => (
               <Link
                 className={cn(

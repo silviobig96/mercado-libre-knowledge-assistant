@@ -43,7 +43,7 @@ export async function answerQuestion(
 
   return {
     answer: answer || RAG_FALLBACK_MESSAGE,
-    sources: toUniqueSources(chunks),
+    sources: toSources(chunks),
   };
 }
 
@@ -86,21 +86,24 @@ function logRetrievalDebug({
   });
 }
 
-function toUniqueSources(chunks: RetrievedDocumentChunk[]): ChatSource[] {
-  const sourcesByDocument = new Map<string, ChatSource>();
+function toSources(chunks: RetrievedDocumentChunk[]): ChatSource[] {
+  return chunks.map((chunk) => ({
+    id: chunk.id,
+    documentId: chunk.documentId,
+    documentName: chunk.documentName,
+    source: chunk.source,
+    chunkIndex: chunk.chunkIndex,
+    similarity: chunk.similarity,
+    excerpt: createExcerpt(chunk.content),
+  }));
+}
 
-  for (const chunk of chunks) {
-    const existingSource = sourcesByDocument.get(chunk.documentId);
+function createExcerpt(content: string): string {
+  const normalizedContent = content.replace(/\s+/g, " ").trim();
 
-    if (!existingSource || existingSource.similarity < chunk.similarity) {
-      sourcesByDocument.set(chunk.documentId, {
-        documentId: chunk.documentId,
-        documentName: chunk.documentName,
-        source: chunk.source,
-        similarity: chunk.similarity,
-      });
-    }
+  if (normalizedContent.length <= 180) {
+    return normalizedContent;
   }
 
-  return Array.from(sourcesByDocument.values());
+  return `${normalizedContent.slice(0, 177)}...`;
 }

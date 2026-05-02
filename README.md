@@ -65,8 +65,48 @@ pnpm dev
 
 Open:
 
-- `http://localhost:3000` for chat
+- `http://localhost:3000` for NovaRetail Knowledge Center and chat
 - `http://localhost:3000/admin` for PDF upload
+- `http://localhost:3000/business-flow` for business integration
+- `http://localhost:3000/architecture` for solution design
+- `http://localhost:3000/evaluation` for impact evaluation
+
+## Academic Project Coverage
+
+Activity 2 — Solution Design:
+
+- Architecture page with component explanation.
+- RAG data flow from PDF ingestion to source-backed answer.
+- Technology stack and service boundaries.
+
+Activity 3 — AI Prototype:
+
+- Working PDF upload.
+- Text extraction and chunking.
+- Gemini embeddings.
+- Supabase pgvector storage and retrieval.
+- Gemini RAG generation.
+- Source attribution in chat responses.
+
+Activity 4 — Business Integration:
+
+- Business Flow page.
+- User-system interaction flow.
+- API and service involvement across upload, retrieval, and answer generation.
+- NovaRetail operational scenarios for service, logistics, warranty, and onboarding.
+
+Activity 5 — Impact Evaluation:
+
+- Evaluation page.
+- Database-backed uploaded document and indexed chunk counts when available.
+- Impact, risks, mitigations, and future improvement framing.
+
+Activity 6 — Final Demo:
+
+- Functional web app.
+- Presentation-ready Chat, Admin, Business Flow, Architecture, and Evaluation pages.
+- Demo script in `docs/demo/demo-script.md`.
+- Suggested demo questions in `docs/demo/sample-questions.md`.
 
 ## Test The Prototype
 
@@ -77,7 +117,8 @@ Open:
 5. Open `/`.
 6. Ask a question that the PDF can answer.
 7. Confirm the answer is concise and shows source document names.
-8. Ask a question unrelated to uploaded documents and confirm the fallback:
+8. Open `/business-flow`, `/architecture`, and `/evaluation` to present Activities 2, 4, and 5.
+9. Ask a question unrelated to uploaded documents and confirm the fallback:
 
 ```txt
 I don't have enough information in the knowledge base to answer that.

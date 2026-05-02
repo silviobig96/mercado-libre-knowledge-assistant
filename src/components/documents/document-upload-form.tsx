@@ -23,6 +23,7 @@ export function DocumentUploadForm() {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -62,6 +63,7 @@ export function DocumentUploadForm() {
         inputRef.current.value = "";
       }
 
+      setSelectedFileName(null);
       router.refresh();
     } catch (uploadError) {
       setErrorMessage(
@@ -80,13 +82,25 @@ export function DocumentUploadForm() {
         <label className="text-sm font-medium" htmlFor="pdf-file">
           PDF document
         </label>
-        <Input
-          accept="application/pdf,.pdf"
-          disabled={isUploading}
-          id="pdf-file"
-          ref={inputRef}
-          type="file"
-        />
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <Input
+            accept="application/pdf,.pdf"
+            className="sr-only"
+            disabled={isUploading}
+            id="pdf-file"
+            onChange={(event) =>
+              setSelectedFileName(event.target.files?.[0]?.name ?? null)
+            }
+            ref={inputRef}
+            type="file"
+          />
+          <Button asChild className="cursor-pointer" variant="outline">
+            <label htmlFor="pdf-file">Choose PDF file</label>
+          </Button>
+          <div className="flex min-h-10 flex-1 items-center rounded-md border bg-background px-3 py-2 text-sm text-muted-foreground">
+            {selectedFileName ?? "No file selected"}
+          </div>
+        </div>
       </div>
       <Button disabled={isUploading} type="submit">
         <Upload aria-hidden="true" className="h-4 w-4" />

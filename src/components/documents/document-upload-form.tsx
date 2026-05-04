@@ -49,7 +49,7 @@ export function DocumentUploadForm() {
         method: "POST",
         body: formData,
       });
-      const payload = (await response.json()) as UploadSuccess | UploadError;
+      const payload = await parseUploadResponse(response);
 
       if (!response.ok || "error" in payload) {
         throw new Error("error" in payload ? payload.error : "Upload failed.");
@@ -110,4 +110,38 @@ export function DocumentUploadForm() {
       {errorMessage && <Alert variant="destructive">{errorMessage}</Alert>}
     </form>
   );
+}
+
+async function parseUploadResponse(
+  response: Response,
+): Promise<UploadSuccess | UploadError> {
+  const contentType = response.headers.get("content-type") ?? "";
+
+  if (contentType.includes("application/json")) {
+    return (await response.json()) as UploadSuccess | UploadError;
+  }
+
+  const responseText = await response.text();
+
+  return {
+    error: response.ok
+      ? "Upload returned an unexpected response."
+      : createUploadErrorMessage(response.status, responseText),
+  };
+}
+
+function createUploadErrorMessage(
+  status: number,
+  responseText: string,
+): string {
+  const plainText = responseText
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (!plainText) {
+    return `Upload failed with status ${status}.`;
+  }
+
+  return `Upload failed with status ${status}: ${plainText.slice(0, 180)}`;
 }

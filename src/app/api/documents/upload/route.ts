@@ -4,6 +4,7 @@ import { ZodError } from "zod";
 import { ingestPdfDocument } from "@/features/documents/services/document-ingestion.service";
 
 export const runtime = "nodejs";
+export const maxDuration = 60;
 
 export async function POST(request: Request) {
   try {

@@ -9,6 +9,7 @@ import {
   RAG_FALLBACK_MESSAGE,
 } from "@/lib/rag/build-rag-prompt";
 import { retrieveRelevantContext } from "@/lib/rag/retrieve-context";
+import { detectConversationIntent } from "@/features/chat/services/conversation-intent.service";
 import { saveChatQueryLog } from "@/features/chat/services/chat-query-log.service";
 import { DEFAULT_SIMILARITY_THRESHOLD } from "@/features/documents/services/document-query.service";
 
@@ -26,6 +27,12 @@ export async function answerQuestion(
 ): Promise<ChatResponse> {
   const startedAt = Date.now();
   const question = questionSchema.parse(questionInput);
+  const intent = detectConversationIntent(question);
+
+  if (intent.intent !== "knowledge") {
+    return createResponseWithQueryLog(question, startedAt, intent.response);
+  }
+
   const questionEmbedding = await generateEmbedding(question);
   const chunks = await retrieveRelevantContext(questionEmbedding);
 

@@ -63,7 +63,7 @@ export function ChatContainer() {
           role: "assistant",
           content: payload.answer,
           confidence: payload.confidence,
-          question,
+          question: payload.sources.length > 0 ? question : undefined,
           sources: payload.sources,
         },
       ]);

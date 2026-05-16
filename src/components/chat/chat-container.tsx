@@ -62,6 +62,8 @@ export function ChatContainer() {
           id: crypto.randomUUID(),
           role: "assistant",
           content: payload.answer,
+          confidence: payload.confidence,
+          question,
           sources: payload.sources,
         },
       ]);

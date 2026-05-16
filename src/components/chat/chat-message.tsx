@@ -1,12 +1,19 @@
 import { cn } from "@/lib/utils";
-import type { ChatSource } from "@/features/chat/types/chat.types";
+import type {
+  ChatSource,
+  ConfidenceLevel,
+} from "@/features/chat/types/chat.types";
 
+import { AnswerFeedback } from "@/components/chat/answer-feedback";
+import { ConfidenceIndicator } from "@/components/chat/confidence-indicator";
 import { SourceList } from "@/components/chat/source-list";
 
 export type ChatMessageModel = {
   id: string;
   role: "user" | "assistant";
   content: string;
+  confidence?: ConfidenceLevel | null;
+  question?: string;
   sources?: ChatSource[];
 };
 
@@ -30,7 +37,19 @@ export function ChatMessage({ message }: ChatMessageProps) {
         )}
       >
         <p className="whitespace-pre-wrap">{message.content}</p>
-        {!isUser && <SourceList sources={message.sources ?? []} />}
+        {!isUser && (
+          <>
+            <ConfidenceIndicator confidence={message.confidence} />
+            <SourceList sources={message.sources ?? []} />
+            {message.question && (
+              <AnswerFeedback
+                answer={message.content}
+                question={message.question}
+                sources={message.sources ?? []}
+              />
+            )}
+          </>
+        )}
       </div>
     </article>
   );

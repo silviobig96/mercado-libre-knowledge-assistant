@@ -1,5 +1,9 @@
 import "server-only";
 
+import {
+  DEFAULT_DOCUMENT_CATEGORY,
+  isDocumentCategory,
+} from "@/features/documents/constants/document-categories";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 import type { DocumentRecord } from "@/features/documents/types/document.types";
@@ -8,7 +12,7 @@ export async function listUploadedDocuments(): Promise<DocumentRecord[]> {
   const supabase = createSupabaseAdminClient();
   const { data: documents, error: documentsError } = await supabase
     .from("documents")
-    .select("id, name, mime_type, size_bytes, created_at")
+    .select("id, name, category, mime_type, size_bytes, created_at")
     .order("created_at", { ascending: false })
     .limit(20);
 
@@ -36,6 +40,9 @@ export async function listUploadedDocuments(): Promise<DocumentRecord[]> {
   return (documents ?? []).map((document) => ({
     id: document.id,
     name: document.name,
+    category: isDocumentCategory(document.category)
+      ? document.category
+      : DEFAULT_DOCUMENT_CATEGORY,
     mimeType: document.mime_type,
     sizeBytes: document.size_bytes,
     createdAt: document.created_at,

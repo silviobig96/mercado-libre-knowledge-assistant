@@ -25,6 +25,7 @@ pnpm install
 Create `.env.local` from `.env.example` and fill in the real values:
 
 ```txt
+ADMIN_PASSWORD=
 GEMINI_API_KEY=
 SUPABASE_URL=
 SUPABASE_PUBLISHABLE_KEY=
@@ -34,6 +35,8 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 ```
 
 The app uses server-side Supabase access for privileged database operations. Keep `SUPABASE_SECRET_KEY` only in `.env.local`; never expose it to browser code. Client-side Supabase access is not required for this prototype, so the `NEXT_PUBLIC_*` variables may remain empty unless you intentionally add client Supabase features later.
+
+`ADMIN_PASSWORD` protects the Admin page and document management APIs in this academic MVP. Use a strong demo password locally and configure the same variable in Vercel for production deployments.
 
 Use `SUPABASE_URL` as the project URL only, without `/rest/v1/`.
 
@@ -45,6 +48,9 @@ Use `SUPABASE_URL` as the project URL only, without `/rest/v1/`.
    - `db/migrations/001_enable_pgvector.sql`
    - `db/migrations/002_create_documents_tables.sql`
    - `db/migrations/003_create_similarity_search_function.sql`
+   - `db/migrations/004_enforce_document_chunks_cascade_delete.sql`
+   - `db/migrations/005_add_document_category.sql`
+   - `db/migrations/006_create_chat_feedback.sql`
 4. Create or copy the new Supabase API keys:
    - `SUPABASE_PUBLISHABLE_KEY` starts with `sb_publishable_`
    - `SUPABASE_SECRET_KEY` starts with `sb_secret_`
@@ -66,7 +72,8 @@ pnpm dev
 Open:
 
 - `http://localhost:3000` for NovaRetail Knowledge Center and chat
-- `http://localhost:3000/admin` for PDF upload
+- `http://localhost:3000/admin/login` to sign in to the Admin area
+- `http://localhost:3000/admin` for protected PDF upload and document management
 - `http://localhost:3000/business-flow` for business integration
 - `http://localhost:3000/architecture` for solution design
 - `http://localhost:3000/evaluation` for impact evaluation
@@ -82,11 +89,13 @@ Activity 2 — Solution Design:
 Activity 3 — AI Prototype:
 
 - Working PDF upload.
+- Document categories for Customer Service, Logistics, Warranties, Returns, Store Operations, and General Policy.
 - Text extraction and chunking.
 - Gemini embeddings.
 - Supabase pgvector storage and retrieval.
 - Gemini RAG generation.
 - Source attribution in chat responses.
+- Answer feedback capture for helpful and not helpful responses.
 
 Activity 4 — Business Integration:
 
@@ -99,6 +108,7 @@ Activity 5 — Impact Evaluation:
 
 - Evaluation page.
 - Database-backed uploaded document and indexed chunk counts when available.
+- Database-backed answer feedback counts and helpful percentage.
 - Impact, risks, mitigations, and future improvement framing.
 
 Activity 6 — Final Demo:
@@ -112,13 +122,16 @@ Activity 6 — Final Demo:
 
 1. Run the Supabase migrations.
 2. Start the app with `pnpm dev`.
-3. Open `/admin`.
-4. Upload a text-based PDF.
-5. Open `/`.
-6. Ask a question that the PDF can answer.
-7. Confirm the answer is concise and shows source document names.
-8. Open `/business-flow`, `/architecture`, and `/evaluation` to present Activities 2, 4, and 5.
-9. Ask a question unrelated to uploaded documents and confirm the fallback:
+3. Open `/admin/login`.
+4. Sign in with `ADMIN_PASSWORD`.
+5. Open `/admin`.
+6. Upload a text-based PDF and choose a document category.
+7. Open `/`.
+8. Ask a question that the PDF can answer.
+9. Confirm the answer is concise, shows a confidence label, and shows source document names.
+10. Submit helpful or not helpful feedback under the assistant answer.
+11. Open `/business-flow`, `/architecture`, and `/evaluation` to present Activities 2, 4, and 5.
+12. Ask a question unrelated to uploaded documents and confirm the fallback:
 
 ```txt
 I don't have enough information in the knowledge base to answer that.
@@ -146,4 +159,6 @@ pnpm format:check
 - Do not hardcode API keys.
 - Do not use legacy Supabase key names.
 - Keep `SUPABASE_SECRET_KEY` in server-only code.
+- Protect `/admin` with `ADMIN_PASSWORD`; document upload and delete APIs require the same HTTP-only admin session cookie.
+- This prototype uses simple password-based admin protection for demonstration purposes. In a production version, this should be replaced with a full authentication and authorization system such as Clerk, Auth0, Supabase Auth, or another identity provider with role-based access control.
 - Review generated answers against source documents for academic evaluation.

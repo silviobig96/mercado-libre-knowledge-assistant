@@ -60,6 +60,10 @@ export default async function EvaluationPage() {
             {Object.entries({
               "Uploaded documents": metricsResult.metrics.uploadedDocuments,
               "Indexed chunks": metricsResult.metrics.indexedChunks,
+              "Total feedback": metricsResult.metrics.totalFeedback,
+              "Helpful feedback": metricsResult.metrics.helpfulFeedback,
+              "Not helpful feedback": metricsResult.metrics.notHelpfulFeedback,
+              "Helpful percentage": metricsResult.metrics.helpfulPercentage,
               "Knowledge base status":
                 metricsResult.metrics.knowledgeBaseStatus,
               "Demo questions available": metricsResult.metrics.demoQuestions,

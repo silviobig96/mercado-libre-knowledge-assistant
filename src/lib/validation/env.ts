@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 const serverEnvSchema = z.object({
+  ADMIN_PASSWORD: z.string().min(1, "ADMIN_PASSWORD is required."),
   GEMINI_API_KEY: z.string().min(1, "GEMINI_API_KEY is required."),
   SUPABASE_URL: z
     .string()
@@ -16,6 +17,7 @@ export type ServerEnv = z.infer<typeof serverEnvSchema>;
 
 export function getServerEnv(): ServerEnv {
   return serverEnvSchema.parse({
+    ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
     GEMINI_API_KEY: process.env.GEMINI_API_KEY,
     SUPABASE_URL: process.env.SUPABASE_URL,
     SUPABASE_PUBLISHABLE_KEY: process.env.SUPABASE_PUBLISHABLE_KEY,

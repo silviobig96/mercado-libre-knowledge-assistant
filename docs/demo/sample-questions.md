@@ -4,14 +4,14 @@ Use these questions to demonstrate the RAG assistant with an uploaded NovaRetail
 
 ## Suggested Questions
 
-1. `What is the process for returning a defective laptop?`
+1. `What is the process to return a defective laptop?`
    - Demonstrates returns and warranty procedure retrieval.
 
-2. `What should I do if a package is marked as delivered but the customer says they did not receive it?`
-   - Demonstrates logistics exception support and escalation guidance.
-
-3. `When should a complaint be escalated to a supervisor?`
+2. `When should a customer service case be escalated?`
    - Demonstrates customer service escalation policy retrieval.
+
+3. `What should the advisor do if a package is marked as delivered but the customer did not receive it?`
+   - Demonstrates logistics exception support and escalation guidance.
 
 4. `What does the electronics warranty cover?`
    - Demonstrates warranty coverage lookup.

@@ -2,12 +2,18 @@ import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
 import { ingestPdfDocument } from "@/features/documents/services/document-ingestion.service";
+import {
+  requireAdminSession,
+  UnauthorizedAdminError,
+} from "@/lib/auth/admin-session";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
 export async function POST(request: Request) {
   try {
+    await requireAdminSession();
+
     const formData = await request.formData();
     const file = formData.get("file");
 
@@ -18,7 +24,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = await ingestPdfDocument(file);
+    const result = await ingestPdfDocument(file, formData.get("category"));
 
     return NextResponse.json(result);
   } catch (error) {
@@ -30,6 +36,10 @@ export async function POST(request: Request) {
 }
 
 function getStatusCode(error: unknown) {
+  if (error instanceof UnauthorizedAdminError) {
+    return 401;
+  }
+
   if (error instanceof ZodError || error instanceof Error) {
     return 400;
   }
@@ -38,6 +48,10 @@ function getStatusCode(error: unknown) {
 }
 
 function getErrorMessage(error: unknown) {
+  if (error instanceof UnauthorizedAdminError) {
+    return "Unauthorized.";
+  }
+
   if (error instanceof ZodError) {
     return error.issues[0]?.message ?? "Invalid upload request.";
   }

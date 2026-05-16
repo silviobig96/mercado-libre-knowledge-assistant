@@ -8,6 +8,11 @@ import { extractPdfText } from "@/lib/pdf/extract-pdf-text";
 import { chunkText } from "@/lib/rag/chunk-text";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
+import {
+  DEFAULT_DOCUMENT_CATEGORY,
+  isDocumentCategory,
+  type DocumentCategory,
+} from "@/features/documents/constants/document-categories";
 import type {
   DocumentChunkInsert,
   UploadDocumentResult,
@@ -17,8 +22,10 @@ const MAX_PDF_SIZE_BYTES = 10 * 1024 * 1024;
 
 export async function ingestPdfDocument(
   file: File,
+  categoryInput: unknown = DEFAULT_DOCUMENT_CATEGORY,
 ): Promise<UploadDocumentResult> {
   validatePdfFile(file);
+  const category = parseDocumentCategory(categoryInput);
 
   const buffer = Buffer.from(await file.arrayBuffer());
   const extractedText = await extractPdfText(buffer);
@@ -38,10 +45,11 @@ export async function ingestPdfDocument(
     .from("documents")
     .insert({
       name: file.name,
+      category,
       mime_type: file.type || "application/pdf",
       size_bytes: file.size,
     })
-    .select("id, name")
+    .select("id, name, category")
     .single();
 
   if (documentError) {
@@ -83,6 +91,7 @@ export async function ingestPdfDocument(
     success: true,
     documentId: document.id,
     documentName: document.name,
+    category: parseDocumentCategory(document.category),
     chunkCount: chunks.length,
   };
 }
@@ -102,4 +111,16 @@ function validatePdfFile(file: File) {
   if (!isPdf) {
     throw new Error("Only PDF files are supported.");
   }
+}
+
+function parseDocumentCategory(category: unknown): DocumentCategory {
+  if (isDocumentCategory(category)) {
+    return category;
+  }
+
+  if (category === null || category === undefined || category === "") {
+    return DEFAULT_DOCUMENT_CATEGORY;
+  }
+
+  throw new Error("Invalid document category.");
 }

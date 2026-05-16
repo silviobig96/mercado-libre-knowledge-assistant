@@ -14,6 +14,7 @@ import { DEFAULT_SIMILARITY_THRESHOLD } from "@/features/documents/services/docu
 import type {
   ChatResponse,
   ChatSource,
+  ConfidenceLevel,
 } from "@/features/chat/types/chat.types";
 import type { RetrievedDocumentChunk } from "@/features/documents/types/document.types";
 
@@ -36,6 +37,7 @@ export async function answerQuestion(
     return {
       answer: RAG_FALLBACK_MESSAGE,
       sources: [],
+      confidence: null,
     };
   }
 
@@ -44,6 +46,7 @@ export async function answerQuestion(
   return {
     answer: answer || RAG_FALLBACK_MESSAGE,
     sources: toSources(chunks),
+    confidence: getConfidenceLevel(chunks[0]?.similarity ?? 0),
   };
 }
 
@@ -106,4 +109,16 @@ function createExcerpt(content: string): string {
   }
 
   return `${normalizedContent.slice(0, 177)}...`;
+}
+
+function getConfidenceLevel(topSimilarity: number): ConfidenceLevel {
+  if (topSimilarity >= 0.7) {
+    return "High";
+  }
+
+  if (topSimilarity >= 0.5) {
+    return "Medium";
+  }
+
+  return "Low";
 }

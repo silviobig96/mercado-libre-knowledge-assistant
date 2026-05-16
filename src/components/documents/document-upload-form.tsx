@@ -7,11 +7,17 @@ import { useRef, useState } from "react";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  DEFAULT_DOCUMENT_CATEGORY,
+  DOCUMENT_CATEGORIES,
+  type DocumentCategory,
+} from "@/features/documents/constants/document-categories";
 
 type UploadSuccess = {
   success: true;
   documentId: string;
   documentName: string;
+  category: DocumentCategory;
   chunkCount: number;
 };
 
@@ -24,6 +30,9 @@ export function DocumentUploadForm() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
+  const [category, setCategory] = useState<DocumentCategory>(
+    DEFAULT_DOCUMENT_CATEGORY,
+  );
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -39,6 +48,7 @@ export function DocumentUploadForm() {
 
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("category", category);
 
     setIsUploading(true);
     setErrorMessage(null);
@@ -56,7 +66,7 @@ export function DocumentUploadForm() {
       }
 
       setSuccessMessage(
-        `${payload.documentName} uploaded with ${payload.chunkCount} chunks.`,
+        `${payload.documentName} uploaded as ${payload.category} with ${payload.chunkCount} chunks.`,
       );
 
       if (inputRef.current) {
@@ -101,6 +111,26 @@ export function DocumentUploadForm() {
             {selectedFileName ?? "No file selected"}
           </div>
         </div>
+      </div>
+      <div className="space-y-2">
+        <label className="text-sm font-medium" htmlFor="document-category">
+          Document category
+        </label>
+        <select
+          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          disabled={isUploading}
+          id="document-category"
+          onChange={(event) =>
+            setCategory(event.target.value as DocumentCategory)
+          }
+          value={category}
+        >
+          {DOCUMENT_CATEGORIES.map((categoryOption) => (
+            <option key={categoryOption} value={categoryOption}>
+              {categoryOption}
+            </option>
+          ))}
+        </select>
       </div>
       <Button disabled={isUploading} type="submit">
         <Upload aria-hidden="true" className="h-4 w-4" />

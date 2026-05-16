@@ -4,6 +4,14 @@ import { createClient } from "@supabase/supabase-js";
 
 import { getServerEnv } from "@/lib/validation/env";
 
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[];
+
 export type Database = {
   public: {
     Tables: {
@@ -11,6 +19,7 @@ export type Database = {
         Row: {
           id: string;
           name: string;
+          category: string;
           mime_type: string | null;
           size_bytes: number | null;
           created_at: string;
@@ -18,6 +27,7 @@ export type Database = {
         Insert: {
           id?: string;
           name: string;
+          category?: string;
           mime_type?: string | null;
           size_bytes?: number | null;
           created_at?: string;
@@ -56,6 +66,28 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      chat_feedback: {
+        Row: {
+          id: string;
+          question: string;
+          answer: string;
+          sources: Json;
+          feedback: "helpful" | "not_helpful";
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          question: string;
+          answer: string;
+          sources?: Json;
+          feedback: "helpful" | "not_helpful";
+          created_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["chat_feedback"]["Insert"]
+        >;
+        Relationships: [];
       };
     };
     Views: Record<string, never>;

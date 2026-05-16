@@ -9,8 +9,18 @@ const serverEnvSchema = z.object({
     .refine((url) => !url.endsWith("/rest/v1/"), {
       message: "SUPABASE_URL must not include /rest/v1/.",
     }),
-  SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
-  SUPABASE_SECRET_KEY: z.string().min(1),
+  SUPABASE_PUBLISHABLE_KEY: z
+    .string()
+    .startsWith(
+      "sb_publishable_",
+      "SUPABASE_PUBLISHABLE_KEY must use the new sb_publishable_ key.",
+    ),
+  SUPABASE_SECRET_KEY: z
+    .string()
+    .startsWith(
+      "sb_secret_",
+      "SUPABASE_SECRET_KEY must use the new sb_secret_ key, not the publishable key.",
+    ),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;

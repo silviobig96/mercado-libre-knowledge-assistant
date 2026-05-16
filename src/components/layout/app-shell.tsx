@@ -3,7 +3,13 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 type AppShellProps = {
-  active: "chat" | "admin" | "business-flow" | "architecture" | "evaluation";
+  active:
+    | "chat"
+    | "admin"
+    | "business-flow"
+    | "architecture"
+    | "evaluation"
+    | "demo";
   children: React.ReactNode;
 };
 
@@ -13,6 +19,7 @@ const links = [
   { href: "/business-flow", label: "Business Flow", key: "business-flow" },
   { href: "/architecture", label: "Architecture", key: "architecture" },
   { href: "/evaluation", label: "Evaluation", key: "evaluation" },
+  { href: "/demo", label: "Demo", key: "demo" },
 ] as const;
 
 export function AppShell({ active, children }: AppShellProps) {

@@ -89,6 +89,32 @@ export type Database = {
         >;
         Relationships: [];
       };
+      chat_queries: {
+        Row: {
+          id: string;
+          question: string;
+          answer: string;
+          sources: Json;
+          confidence_label: "High" | "Medium" | "Low" | null;
+          top_similarity_score: number | null;
+          had_fallback: boolean;
+          response_time_ms: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          question: string;
+          answer: string;
+          sources?: Json;
+          confidence_label?: "High" | "Medium" | "Low" | null;
+          top_similarity_score?: number | null;
+          had_fallback: boolean;
+          response_time_ms: number;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["chat_queries"]["Insert"]>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {

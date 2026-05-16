@@ -1,4 +1,10 @@
-import { AlertTriangle, CheckCircle2, ShieldCheck } from "lucide-react";
+import {
+  AlertTriangle,
+  CheckCircle2,
+  GraduationCap,
+  Lightbulb,
+  ShieldCheck,
+} from "lucide-react";
 
 import { AppShell } from "@/components/layout/app-shell";
 import { Alert } from "@/components/ui/alert";
@@ -34,8 +40,24 @@ const mitigations = [
   "Show sources.",
   "Use fallback when context is insufficient.",
   "Keep documents updated.",
-  "Restrict admin upload access in future versions.",
+  "Protect document management with admin authentication.",
   "Add human review for critical procedures.",
+];
+
+const futureImprovements = [
+  "Replace MVP password protection with role-based enterprise authentication.",
+  "Add document versioning and scheduled review dates.",
+  "Filter retrieval by department or document category.",
+  "Export evaluation logs for academic reporting.",
+  "Add human approval workflows for critical policies.",
+];
+
+const academicCoverage = [
+  "Activity 2: Architecture and technology selection are shown in the Architecture page.",
+  "Activity 3: The Chat and Admin pages demonstrate the working RAG prototype.",
+  "Activity 4: The Business Flow page explains operational integration.",
+  "Activity 5: This Evaluation page shows metrics, impact, risks, and mitigations.",
+  "Activity 6: The Demo page provides a presentation-ready walkthrough.",
 ];
 
 export default async function EvaluationPage() {
@@ -60,6 +82,19 @@ export default async function EvaluationPage() {
             {Object.entries({
               "Uploaded documents": metricsResult.metrics.uploadedDocuments,
               "Indexed chunks": metricsResult.metrics.indexedChunks,
+              "Categories covered": metricsResult.metrics.categoriesCovered,
+              "Total questions asked": metricsResult.metrics.totalQuestions,
+              "Answered with context":
+                metricsResult.metrics.answeredWithContext,
+              "Insufficient context": metricsResult.metrics.fallbackQuestions,
+              "Average response time":
+                metricsResult.metrics.averageResponseTime,
+              "High confidence answers":
+                metricsResult.metrics.highConfidenceAnswers,
+              "Medium confidence answers":
+                metricsResult.metrics.mediumConfidenceAnswers,
+              "Low confidence answers":
+                metricsResult.metrics.lowConfidenceAnswers,
               "Total feedback": metricsResult.metrics.totalFeedback,
               "Helpful feedback": metricsResult.metrics.helpfulFeedback,
               "Not helpful feedback": metricsResult.metrics.notHelpfulFeedback,
@@ -67,8 +102,6 @@ export default async function EvaluationPage() {
               "Knowledge base status":
                 metricsResult.metrics.knowledgeBaseStatus,
               "Demo questions available": metricsResult.metrics.demoQuestions,
-              "Average expected response time":
-                metricsResult.metrics.averageExpectedResponseTime,
               "Grounded-answer requirement":
                 metricsResult.metrics.groundedAnswerRequirement,
             }).map(([label, value]) => (
@@ -91,6 +124,16 @@ export default async function EvaluationPage() {
           items={mitigations}
           title="Mitigations"
         />
+        <EvaluationList
+          icon="future"
+          items={futureImprovements}
+          title="Future Improvements"
+        />
+        <EvaluationList
+          icon="academic"
+          items={academicCoverage}
+          title="Academic Activity Coverage"
+        />
       </div>
     </AppShell>
   );
@@ -101,16 +144,20 @@ function EvaluationList({
   items,
   title,
 }: {
-  icon: "impact" | "risk" | "mitigation";
+  icon: "academic" | "future" | "impact" | "risk" | "mitigation";
   items: string[];
   title: string;
 }) {
   const Icon =
     icon === "risk"
       ? AlertTriangle
-      : icon === "impact"
-        ? CheckCircle2
-        : ShieldCheck;
+      : icon === "future"
+        ? Lightbulb
+        : icon === "academic"
+          ? GraduationCap
+          : icon === "impact"
+            ? CheckCircle2
+            : ShieldCheck;
 
   return (
     <Card>

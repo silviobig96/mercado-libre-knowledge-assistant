@@ -51,9 +51,16 @@ Use `SUPABASE_URL` as the project URL only, without `/rest/v1/`.
    - `db/migrations/004_enforce_document_chunks_cascade_delete.sql`
    - `db/migrations/005_add_document_category.sql`
    - `db/migrations/006_create_chat_feedback.sql`
+   - `db/migrations/007_create_chat_queries.sql`
 4. Create or copy the new Supabase API keys:
    - `SUPABASE_PUBLISHABLE_KEY` starts with `sb_publishable_`
    - `SUPABASE_SECRET_KEY` starts with `sb_secret_`
+
+If inserts fail after enabling Row Level Security, verify that the deployment
+environment uses the `sb_secret_...` value for `SUPABASE_SECRET_KEY`. The app
+does not insert feedback from browser Supabase clients; browser feedback
+submits to `/api/chat/feedback`, and that route inserts server-side with the
+admin Supabase client.
 
 The schema stores embeddings as `vector(768)`. The current implementation uses `gemini-embedding-001` with `outputDimensionality: 768` for free-tier-friendly storage. To change models or dimensions, update the constants in `src/lib/ai/gemini.client.ts` and adjust the migration vector dimensions and RPC signature.
 
@@ -77,6 +84,7 @@ Open:
 - `http://localhost:3000/business-flow` for business integration
 - `http://localhost:3000/architecture` for solution design
 - `http://localhost:3000/evaluation` for impact evaluation
+- `http://localhost:3000/demo` for a presentation walkthrough
 
 ## Academic Project Coverage
 
@@ -96,6 +104,7 @@ Activity 3 — AI Prototype:
 - Gemini RAG generation.
 - Source attribution in chat responses.
 - Answer feedback capture for helpful and not helpful responses.
+- Chat query history for response time, confidence, and fallback metrics.
 
 Activity 4 — Business Integration:
 
@@ -107,7 +116,7 @@ Activity 4 — Business Integration:
 Activity 5 — Impact Evaluation:
 
 - Evaluation page.
-- Database-backed uploaded document and indexed chunk counts when available.
+- Database-backed uploaded document, indexed chunk, category, and query counts.
 - Database-backed answer feedback counts and helpful percentage.
 - Impact, risks, mitigations, and future improvement framing.
 
@@ -115,6 +124,7 @@ Activity 6 — Final Demo:
 
 - Functional web app.
 - Presentation-ready Chat, Admin, Business Flow, Architecture, and Evaluation pages.
+- Demo page with a final project walkthrough.
 - Demo script in `docs/demo/demo-script.md`.
 - Suggested demo questions in `docs/demo/sample-questions.md`.
 
@@ -130,8 +140,9 @@ Activity 6 — Final Demo:
 8. Ask a question that the PDF can answer.
 9. Confirm the answer is concise, shows a confidence label, and shows source document names.
 10. Submit helpful or not helpful feedback under the assistant answer.
-11. Open `/business-flow`, `/architecture`, and `/evaluation` to present Activities 2, 4, and 5.
-12. Ask a question unrelated to uploaded documents and confirm the fallback:
+11. Open `/evaluation` to review metrics from documents, query history, and feedback.
+12. Open `/demo`, `/business-flow`, and `/architecture` to present the final project.
+13. Ask a question unrelated to uploaded documents and confirm the fallback:
 
 ```txt
 I don't have enough information in the knowledge base to answer that.

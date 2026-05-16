@@ -9,6 +9,7 @@ import {
   RAG_FALLBACK_MESSAGE,
 } from "@/lib/rag/build-rag-prompt";
 import { retrieveRelevantContext } from "@/lib/rag/retrieve-context";
+import { saveChatQueryLog } from "@/features/chat/services/chat-query-log.service";
 import { DEFAULT_SIMILARITY_THRESHOLD } from "@/features/documents/services/document-query.service";
 
 import type {
@@ -23,6 +24,7 @@ const questionSchema = z.string().trim().min(1).max(1000);
 export async function answerQuestion(
   questionInput: unknown,
 ): Promise<ChatResponse> {
+  const startedAt = Date.now();
   const question = questionSchema.parse(questionInput);
   const questionEmbedding = await generateEmbedding(question);
   const chunks = await retrieveRelevantContext(questionEmbedding);
@@ -34,20 +36,20 @@ export async function answerQuestion(
   });
 
   if (chunks.length === 0) {
-    return {
+    return createResponseWithQueryLog(question, startedAt, {
       answer: RAG_FALLBACK_MESSAGE,
       sources: [],
       confidence: null,
-    };
+    });
   }
 
   const answer = await generateAnswer(buildRagPrompt(question, chunks));
 
-  return {
+  return createResponseWithQueryLog(question, startedAt, {
     answer: answer || RAG_FALLBACK_MESSAGE,
     sources: toSources(chunks),
     confidence: getConfidenceLevel(chunks[0]?.similarity ?? 0),
-  };
+  });
 }
 
 type RetrievalDebugInput = {
@@ -121,4 +123,24 @@ function getConfidenceLevel(topSimilarity: number): ConfidenceLevel {
   }
 
   return "Low";
+}
+
+async function createResponseWithQueryLog(
+  question: string,
+  startedAt: number,
+  response: ChatResponse,
+): Promise<ChatResponse> {
+  try {
+    await saveChatQueryLog({
+      question,
+      response,
+      responseTimeMs: Date.now() - startedAt,
+    });
+  } catch (error) {
+    if (process.env.NODE_ENV === "development") {
+      console.error("[chat query log] failed to save query log", error);
+    }
+  }
+
+  return response;
 }

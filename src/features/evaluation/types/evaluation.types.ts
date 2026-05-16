@@ -1,12 +1,19 @@
 export type EvaluationMetrics = {
   uploadedDocuments: number;
   indexedChunks: number;
+  totalQuestions: number;
+  answeredWithContext: number;
+  fallbackQuestions: number;
+  averageResponseTime: string;
+  highConfidenceAnswers: number;
+  mediumConfidenceAnswers: number;
+  lowConfidenceAnswers: number;
   totalFeedback: number;
   helpfulFeedback: number;
   notHelpfulFeedback: number;
   helpfulPercentage: string;
+  categoriesCovered: string;
   knowledgeBaseStatus: "Ready" | "Needs documents";
   demoQuestions: number;
-  averageExpectedResponseTime: string;
   groundedAnswerRequirement: string;
 };

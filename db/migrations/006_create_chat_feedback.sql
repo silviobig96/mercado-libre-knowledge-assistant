@@ -12,3 +12,5 @@ create index if not exists chat_feedback_created_at_idx
 
 create index if not exists chat_feedback_feedback_idx
   on chat_feedback(feedback);
+
+alter table chat_feedback enable row level security;

@@ -1,9 +1,12 @@
 import {
   AlertTriangle,
   CheckCircle2,
+  Database,
   GraduationCap,
   Lightbulb,
+  MessageSquareText,
   ShieldCheck,
+  ThumbsUp,
 } from "lucide-react";
 
 import { AppShell } from "@/components/layout/app-shell";
@@ -20,44 +23,44 @@ import { getEvaluationMetrics } from "@/features/evaluation/services/evaluation-
 export const dynamic = "force-dynamic";
 
 const impacts = [
-  "Reduces time spent searching internal documents.",
-  "Improves consistency in customer service answers.",
-  "Supports onboarding of new employees.",
-  "Reduces dependency on senior staff for routine questions.",
-  "Helps employees verify answers through sources.",
+  "Reduces time spent searching approved operational documents.",
+  "Improves consistency in source-backed Customer Experience answers.",
+  "Supports agent onboarding for the defined Argentina Marketplace scope.",
+  "Keeps evidence visible before a human resolves or escalates a case.",
 ];
 
 const risks = [
-  "Hallucinated responses if context is insufficient.",
-  "Outdated documents.",
-  "Sensitive information exposure.",
-  "Overreliance on AI.",
-  "Incorrect document ingestion or poor PDF extraction.",
+  "Incomplete, outdated, or contradictory source documents.",
+  "Country-specific differences being applied outside Argentina.",
+  "Sensitive or unauthorized documents entering the corpus.",
+  "Hallucination, irrelevant retrieval, or overreliance on AI output.",
+  "Poor extraction quality from scanned or complex PDFs.",
 ];
 
 const mitigations = [
-  "Answer only from retrieved context.",
-  "Show sources.",
-  "Use fallback when context is insufficient.",
-  "Keep documents updated.",
-  "Protect document management with admin authentication.",
-  "Add human review for critical procedures.",
+  "Answer only from thresholded context and display retrieved sources.",
+  "Use the required fallback when qualifying evidence is unavailable.",
+  "Limit administration to authenticated users and approved documents.",
+  "Keep the human agent as final reviewer and preserve escalation paths.",
+  "Track queries, confidence, sources, response time, and feedback.",
 ];
 
 const futureImprovements = [
-  "Replace MVP password protection with role-based enterprise authentication.",
-  "Add document versioning and scheduled review dates.",
-  "Filter retrieval by department or document category.",
-  "Export evaluation logs for academic reporting.",
-  "Add human approval workflows for critical policies.",
+  "Add document owner, country, effective date, versioning, and review workflows.",
+  "Classify in-scope test queries so retrieval success rate can be calculated accurately.",
+  "Replace the shared MVP password with role-based enterprise authentication.",
+  "Add OCR, page-level citations, evaluation exports, and a curated test set.",
+  "Tune the similarity threshold against validated Argentina-domain questions.",
 ];
 
 const academicCoverage = [
-  "Activity 2: Architecture and technology selection are shown in the Architecture page.",
-  "Activity 3: The Chat and Admin pages demonstrate the working RAG prototype.",
-  "Activity 4: The Business Flow page explains operational integration.",
-  "Activity 5: This Evaluation page shows metrics, impact, risks, and mitigations.",
-  "Activity 6: The Demo page provides a presentation-ready walkthrough.",
+  "Activity 1: Mercado Libre domain selection, Argentina MVP scope, AI objective, and 10-week delivery framing.",
+  "Knowledge Acquisition: source map, acquisition matrix, knowledge questions, risks, and sufficiency criterion.",
+  "Activity 2: architecture, technology selection, and modular RAG design.",
+  "Activity 3: working Chat, Admin, PDF ingestion, retrieval, generation, and sources.",
+  "Activity 4: buyer/seller support flow, human review, resolution, and escalation.",
+  "Activity 5: database-backed metrics, impact, risks, mitigations, and improvements.",
+  "Activity 6: presentation-ready demo flow and supporting documentation.",
 ];
 
 export default async function EvaluationPage() {
@@ -67,75 +70,178 @@ export default async function EvaluationPage() {
     <AppShell active="evaluation">
       <div className="space-y-6">
         <section className="max-w-3xl">
-          <p className="text-sm font-medium text-primary">Impact Evaluation</p>
-          <h2 className="mt-2 text-3xl font-semibold tracking-normal">
-            Prototype Evaluation
+          <p className="text-sm font-semibold text-dark-blue">
+            Impact Evaluation · Live prototype data
+          </p>
+          <h2 className="mt-2 text-3xl font-semibold tracking-tight">
+            RAG Evaluation
           </h2>
-          <p className="mt-3 text-muted-foreground">
-            Evaluation focuses on knowledge-base readiness, grounded answer
-            behavior, operational impact, risks, and mitigation controls.
+          <p className="mt-3 leading-7 text-muted-foreground">
+            Metrics come from Supabase documents, chunks, chat query history,
+            visible sources, and user feedback. No values are fabricated.
           </p>
         </section>
 
         {metricsResult.ok ? (
-          <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {Object.entries({
-              "Uploaded documents": metricsResult.metrics.uploadedDocuments,
-              "Indexed chunks": metricsResult.metrics.indexedChunks,
-              "Categories covered": metricsResult.metrics.categoriesCovered,
-              "Total questions asked": metricsResult.metrics.totalQuestions,
-              "Answered with context":
-                metricsResult.metrics.answeredWithContext,
-              "Insufficient context": metricsResult.metrics.fallbackQuestions,
-              "Average response time":
-                metricsResult.metrics.averageResponseTime,
-              "High confidence answers":
-                metricsResult.metrics.highConfidenceAnswers,
-              "Medium confidence answers":
-                metricsResult.metrics.mediumConfidenceAnswers,
-              "Low confidence answers":
-                metricsResult.metrics.lowConfidenceAnswers,
-              "Total feedback": metricsResult.metrics.totalFeedback,
-              "Helpful feedback": metricsResult.metrics.helpfulFeedback,
-              "Not helpful feedback": metricsResult.metrics.notHelpfulFeedback,
-              "Helpful percentage": metricsResult.metrics.helpfulPercentage,
-              "Knowledge base status":
-                metricsResult.metrics.knowledgeBaseStatus,
-              "Demo questions available": metricsResult.metrics.demoQuestions,
-              "Grounded-answer requirement":
-                metricsResult.metrics.groundedAnswerRequirement,
-            }).map(([label, value]) => (
-              <Card key={label}>
-                <CardHeader className="pb-2">
-                  <CardDescription>{label}</CardDescription>
-                  <CardTitle className="text-xl">{value}</CardTitle>
-                </CardHeader>
-              </Card>
-            ))}
-          </section>
+          <>
+            <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              <MetricCard
+                icon={Database}
+                label="Uploaded documents"
+                value={metricsResult.metrics.uploadedDocuments}
+              />
+              <MetricCard
+                icon={MessageSquareText}
+                label="Total questions"
+                value={metricsResult.metrics.totalQuestions}
+              />
+              <MetricCard
+                icon={ShieldCheck}
+                label="Source-backed answer rate"
+                tone="success"
+                value={metricsResult.metrics.sourceBackedAnswerRate}
+              />
+              <MetricCard
+                icon={ThumbsUp}
+                label="Helpful feedback"
+                tone="success"
+                value={metricsResult.metrics.helpfulPercentage}
+              />
+            </section>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Operational metrics</CardTitle>
+                <CardDescription>
+                  Confidence counts cover only answers with a confidence label;
+                  greetings and other conversational responses are reported
+                  separately from source-backed answers. The source-backed rate
+                  uses non-fallback responses as its denominator.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto rounded-lg border">
+                  <table className="min-w-[760px] w-full text-left text-sm">
+                    <thead className="bg-surface-subtle text-xs uppercase tracking-wide text-muted-foreground">
+                      <tr>
+                        <th className="px-4 py-3 font-semibold">
+                          Knowledge base
+                        </th>
+                        <th className="px-4 py-3 font-semibold">
+                          Answer behavior
+                        </th>
+                        <th className="px-4 py-3 font-semibold">Confidence</th>
+                        <th className="px-4 py-3 font-semibold">Feedback</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="align-top">
+                        <td className="border-t px-4 py-4 leading-7">
+                          {metricsResult.metrics.indexedChunks} indexed chunks
+                          <br />
+                          {metricsResult.metrics.categoriesCovered} categories
+                          <br />
+                          Status: {metricsResult.metrics.knowledgeBaseStatus}
+                        </td>
+                        <td className="border-t px-4 py-4 leading-7">
+                          {metricsResult.metrics.answeredWithContext} with
+                          sources
+                          <br />
+                          {metricsResult.metrics.fallbackQuestions} fallbacks
+                          <br />
+                          {
+                            metricsResult.metrics
+                              .conversationalOrUnscoredQuestions
+                          }{" "}
+                          conversational/unscored
+                        </td>
+                        <td className="border-t px-4 py-4 leading-7">
+                          {metricsResult.metrics.confidenceRatedAnswers} rated
+                          answers
+                          <br />
+                          {metricsResult.metrics.highConfidenceAnswers} high ·{" "}
+                          {metricsResult.metrics.mediumConfidenceAnswers} medium
+                          · {metricsResult.metrics.lowConfidenceAnswers} low
+                        </td>
+                        <td className="border-t px-4 py-4 leading-7">
+                          {metricsResult.metrics.totalFeedback} total
+                          <br />
+                          {metricsResult.metrics.helpfulFeedback} helpful ·{" "}
+                          {metricsResult.metrics.notHelpfulFeedback} not helpful
+                          <br />
+                          Avg. response:{" "}
+                          {metricsResult.metrics.averageResponseTime}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+          </>
         ) : (
           <Alert variant="destructive">{metricsResult.error}</Alert>
         )}
 
-        <EvaluationList icon="impact" items={impacts} title="Expected Impact" />
-        <EvaluationList icon="risk" items={risks} title="Risks" />
-        <EvaluationList
-          icon="mitigation"
-          items={mitigations}
-          title="Mitigations"
-        />
-        <EvaluationList
-          icon="future"
-          items={futureImprovements}
-          title="Future Improvements"
-        />
+        <div className="grid gap-6 lg:grid-cols-2">
+          <EvaluationList
+            icon="impact"
+            items={impacts}
+            title="Expected impact"
+          />
+          <EvaluationList icon="risk" items={risks} title="Risks" />
+          <EvaluationList
+            icon="mitigation"
+            items={mitigations}
+            title="Mitigations"
+          />
+          <EvaluationList
+            icon="future"
+            items={futureImprovements}
+            title="Future improvements"
+          />
+        </div>
         <EvaluationList
           icon="academic"
           items={academicCoverage}
-          title="Academic Activity Coverage"
+          title="Academic activity coverage"
         />
       </div>
     </AppShell>
+  );
+}
+
+function MetricCard({
+  icon: Icon,
+  label,
+  tone = "default",
+  value,
+}: {
+  icon: typeof Database;
+  label: string;
+  tone?: "default" | "success";
+  value: number | string;
+}) {
+  return (
+    <Card>
+      <CardHeader className="pb-4">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <CardTitle className="text-2xl">{value}</CardTitle>
+            <CardDescription className="mt-2">{label}</CardDescription>
+          </div>
+          <span
+            className={`rounded-md p-2 ${
+              tone === "success"
+                ? "bg-success/10 text-success"
+                : "bg-accent text-primary"
+            }`}
+          >
+            <Icon aria-hidden="true" className="h-5 w-5" />
+          </span>
+        </div>
+      </CardHeader>
+    </Card>
   );
 }
 
@@ -162,17 +268,19 @@ function EvaluationList({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          <Icon aria-hidden="true" className="h-5 w-5 text-primary" />
+          {title}
+        </CardTitle>
       </CardHeader>
       <CardContent>
-        <ul className="grid gap-3 md:grid-cols-2">
+        <ul className="grid gap-3">
           {items.map((item) => (
-            <li className="flex gap-3 rounded-md border p-3" key={item}>
-              <Icon
-                aria-hidden="true"
-                className="mt-0.5 h-4 w-4 shrink-0 text-primary"
-              />
-              <span className="text-sm">{item}</span>
+            <li
+              className="rounded-lg bg-surface-subtle p-3 text-sm leading-6"
+              key={item}
+            >
+              {item}
             </li>
           ))}
         </ul>

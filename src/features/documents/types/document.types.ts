@@ -3,7 +3,7 @@ import type { DocumentCategory } from "@/features/documents/constants/document-c
 export type DocumentRecord = {
   id: string;
   name: string;
-  category: DocumentCategory;
+  category: string;
   mimeType: string | null;
   sizeBytes: number | null;
   createdAt: string;

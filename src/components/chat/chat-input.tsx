@@ -30,14 +30,14 @@ export function ChatInput({ disabled = false, onSubmit }: ChatInputProps) {
   return (
     <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
       <label className="sr-only" htmlFor="question">
-        Ask a NovaRetail knowledge question
+        Ask a Mercado Libre Marketplace knowledge question
       </label>
       <Textarea
-        className="min-h-24 resize-none"
+        className="min-h-24 resize-none border-input bg-card shadow-sm"
         disabled={disabled}
         id="question"
         onChange={(event) => setQuestion(event.target.value)}
-        placeholder="Ask about uploaded NovaRetail policies, reports, or procedures..."
+        placeholder="Ask about returns, claims, refunds, Mercado Envíos, or marketplace procedures..."
         value={question}
       />
       <div className="flex justify-end">

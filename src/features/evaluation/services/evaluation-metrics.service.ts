@@ -25,7 +25,7 @@ export async function getEvaluationMetrics(): Promise<EvaluationMetrics> {
       .eq("feedback", "helpful"),
     supabase
       .from("chat_queries")
-      .select("confidence_label, had_fallback, response_time_ms"),
+      .select("confidence_label, had_fallback, response_time_ms, sources"),
   ]);
 
   if (documentsResult.error) {
@@ -68,7 +68,17 @@ export async function getEvaluationMetrics(): Promise<EvaluationMetrics> {
   const fallbackQuestions = chatQueries.filter(
     (query) => query.had_fallback,
   ).length;
-  const answeredWithContext = chatQueries.length - fallbackQuestions;
+  const answeredWithContext = chatQueries.filter(
+    (query) => !query.had_fallback && hasVisibleSources(query.sources),
+  ).length;
+  const nonFallbackQuestions = chatQueries.length - fallbackQuestions;
+  const conversationalOrUnscoredQuestions = Math.max(
+    chatQueries.length - fallbackQuestions - answeredWithContext,
+    0,
+  );
+  const confidenceRatedAnswers = chatQueries.filter(
+    (query) => query.confidence_label !== null,
+  ).length;
 
   return {
     uploadedDocuments,
@@ -76,6 +86,13 @@ export async function getEvaluationMetrics(): Promise<EvaluationMetrics> {
     totalQuestions: chatQueries.length,
     answeredWithContext,
     fallbackQuestions,
+    conversationalOrUnscoredQuestions,
+    sourceBackedAnswerRate: formatPercentage(
+      answeredWithContext,
+      nonFallbackQuestions,
+      "No questions yet",
+    ),
+    confidenceRatedAnswers,
     averageResponseTime: formatAverageResponseTime(
       chatQueries.map((query) => query.response_time_ms),
     ),
@@ -97,11 +114,23 @@ export async function getEvaluationMetrics(): Promise<EvaluationMetrics> {
 }
 
 function formatHelpfulPercentage(helpful: number, total: number): string {
-  if (total === 0) {
-    return "No feedback yet";
+  return formatPercentage(helpful, total, "No feedback yet");
+}
+
+function formatPercentage(
+  numerator: number,
+  denominator: number,
+  emptyLabel: string,
+): string {
+  if (denominator === 0) {
+    return emptyLabel;
   }
 
-  return `${Math.round((helpful / total) * 100)}%`;
+  return `${Math.round((numerator / denominator) * 100)}%`;
+}
+
+function hasVisibleSources(sources: unknown): boolean {
+  return Array.isArray(sources) && sources.length > 0;
 }
 
 function formatAverageResponseTime(responseTimes: number[]): string {

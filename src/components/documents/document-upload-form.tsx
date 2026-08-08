@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import {
   DEFAULT_DOCUMENT_CATEGORY,
   DOCUMENT_CATEGORIES,
+  getDocumentCategoryLabel,
   type DocumentCategory,
 } from "@/features/documents/constants/document-categories";
 
@@ -66,7 +67,7 @@ export function DocumentUploadForm() {
       }
 
       setSuccessMessage(
-        `${payload.documentName} uploaded as ${payload.category} with ${payload.chunkCount} chunks.`,
+        `${payload.documentName} uploaded as ${getDocumentCategoryLabel(payload.category)} with ${payload.chunkCount} chunks.`,
       );
 
       if (inputRef.current) {
@@ -87,29 +88,35 @@ export function DocumentUploadForm() {
   }
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit}>
+    <form className="space-y-5" onSubmit={handleSubmit}>
       <div className="space-y-2">
         <label className="text-sm font-medium" htmlFor="pdf-file">
           PDF document
         </label>
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <Input
-            accept="application/pdf,.pdf"
-            className="sr-only"
-            disabled={isUploading}
-            id="pdf-file"
-            onChange={(event) =>
-              setSelectedFileName(event.target.files?.[0]?.name ?? null)
-            }
-            ref={inputRef}
-            type="file"
-          />
-          <Button asChild className="cursor-pointer" variant="outline">
-            <label htmlFor="pdf-file">Choose PDF file</label>
-          </Button>
-          <div className="flex min-h-10 flex-1 items-center rounded-md border bg-background px-3 py-2 text-sm text-muted-foreground">
-            {selectedFileName ?? "No file selected"}
+        <div className="rounded-lg border-2 border-dashed border-primary/25 bg-accent/30 p-4">
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Input
+              accept="application/pdf,.pdf"
+              className="sr-only"
+              disabled={isUploading}
+              id="pdf-file"
+              onChange={(event) =>
+                setSelectedFileName(event.target.files?.[0]?.name ?? null)
+              }
+              ref={inputRef}
+              type="file"
+            />
+            <Button asChild className="cursor-pointer" variant="outline">
+              <label htmlFor="pdf-file">Choose PDF file</label>
+            </Button>
+            <div className="flex min-h-10 flex-1 items-center rounded-md border bg-background px-3 py-2 text-sm text-muted-foreground">
+              {selectedFileName ?? "No file selected"}
+            </div>
           </div>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Text-based PDF, up to 10 MB. Use approved public, academic, or
+            clearly simulated sources only.
+          </p>
         </div>
       </div>
       <div className="space-y-2">
@@ -126,8 +133,8 @@ export function DocumentUploadForm() {
           value={category}
         >
           {DOCUMENT_CATEGORIES.map((categoryOption) => (
-            <option key={categoryOption} value={categoryOption}>
-              {categoryOption}
+            <option key={categoryOption.value} value={categoryOption.value}>
+              {categoryOption.label}
             </option>
           ))}
         </select>

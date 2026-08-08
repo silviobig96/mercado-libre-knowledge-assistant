@@ -30,9 +30,9 @@ export function ChatMessage({ message }: ChatMessageProps) {
     >
       <div
         className={cn(
-          "max-w-[85%] rounded-lg border px-4 py-3 text-sm leading-6 shadow-sm",
+          "max-w-[92%] rounded-lg border px-4 py-3 text-sm leading-6 shadow-sm sm:max-w-[82%]",
           isUser
-            ? "border-primary bg-primary text-primary-foreground"
+            ? "border-primary/25 bg-accent text-foreground"
             : "bg-card text-card-foreground",
         )}
       >

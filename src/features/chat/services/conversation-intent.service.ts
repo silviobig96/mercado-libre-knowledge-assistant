@@ -12,28 +12,28 @@ type IntentResult =
     };
 
 const SPANISH_GREETING_RESPONSE =
-  "Hola. Soy el asistente de conocimiento de NovaRetail. Puedes preguntarme sobre devoluciones, garantías, logística, reclamos, atención al cliente o procedimientos internos.";
+  "Hola. Soy el asistente académico de conocimiento para Mercado Libre Argentina. Puedes preguntarme sobre devoluciones, reembolsos, reclamos, Mercado Envíos, protección al comprador o procedimientos del marketplace incluidos en la base de conocimiento.";
 
 const ENGLISH_GREETING_RESPONSE =
-  "Hello. I am NovaRetail's knowledge assistant. You can ask me about returns, warranties, logistics, claims, customer service, or internal procedures.";
+  "Hello. I am the academic knowledge assistant for Mercado Libre Argentina. You can ask about returns, refunds, claims, Mercado Envíos, buyer protection, or marketplace procedures covered by the knowledge base.";
 
 const SPANISH_THANKS_RESPONSE =
-  "Con gusto. Si necesitas consultar otra política o procedimiento de NovaRetail, puedo ayudarte.";
+  "Con gusto. Puedo ayudarte a consultar otra fuente aprobada sobre Marketplace o Mercado Envíos en Argentina.";
 
 const ENGLISH_THANKS_RESPONSE =
-  "You're welcome. If you need to check another NovaRetail policy or procedure, I can help.";
+  "You're welcome. I can help you check another approved Marketplace or Mercado Envíos source for Argentina.";
 
 const SPANISH_FAREWELL_RESPONSE =
-  "Hasta luego. Si necesitas consultar otra política o procedimiento de NovaRetail, puedo ayudarte.";
+  "Hasta luego. Recuerda validar las fuentes y escalar cualquier caso ambiguo o sensible.";
 
 const ENGLISH_FAREWELL_RESPONSE =
-  "Goodbye. If you need to check another NovaRetail policy or procedure, I can help.";
+  "Goodbye. Remember to verify the sources and escalate any ambiguous or sensitive case.";
 
 const SPANISH_SHORT_RESPONSE =
-  "Puedo ayudarte con preguntas sobre políticas, devoluciones, garantías, logística, reclamos, atención al cliente o procedimientos internos de NovaRetail.";
+  "Puedo ayudarte con preguntas sobre devoluciones, reembolsos, reclamos, Mercado Envíos, protección al comprador y operaciones del marketplace incluidas en la base de conocimiento.";
 
 const ENGLISH_SHORT_RESPONSE =
-  "I can help with questions about NovaRetail policies, returns, warranties, logistics, claims, customer service, or internal procedures.";
+  "I can help with questions about returns, refunds, claims, Mercado Envíos, buyer protection, and marketplace operations covered by the knowledge base.";
 
 const SPANISH_GREETINGS = new Set([
   "buenas",

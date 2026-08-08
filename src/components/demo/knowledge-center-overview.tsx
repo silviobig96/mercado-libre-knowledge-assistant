@@ -1,10 +1,11 @@
 import {
+  BadgeHelp,
   ClipboardCheck,
   Headphones,
   PackageSearch,
   RefreshCcw,
   ShieldCheck,
-  Store,
+  ShoppingBag,
 } from "lucide-react";
 
 import {
@@ -14,42 +15,43 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { APP_CONFIG } from "@/lib/domain/app-config";
 
 const businessAreas = [
   {
-    title: "Customer Service",
+    title: "Customer Experience",
     description:
-      "Helps advisors answer policy, escalation, and customer-case questions with source-backed guidance.",
+      "Support agents with policy, claim, return, refund, and escalation questions.",
     icon: Headphones,
   },
   {
-    title: "Logistics",
+    title: "Mercado Envíos",
     description:
-      "Supports package status, delivery exception, carrier investigation, and fulfillment procedure lookups.",
+      "Delivery incidents, shipment procedures, exceptions, evidence, and escalation.",
     icon: PackageSearch,
   },
   {
-    title: "Warranties",
+    title: "Claims & Buyer Protection",
     description:
-      "Retrieves warranty coverage, validation requirements, approval rules, and escalation criteria.",
+      "Source-backed next steps for damaged, incomplete, incorrect, or disputed purchases.",
     icon: ShieldCheck,
   },
   {
-    title: "Returns",
+    title: "Returns & Refunds",
     description:
-      "Guides employees through return eligibility, required evidence, refund timing, and exception handling.",
+      "Return eligibility, required evidence, procedures, refunds, and documented exceptions.",
     icon: RefreshCcw,
   },
   {
-    title: "Store Operations",
+    title: "Marketplace Operations",
     description:
-      "Provides quick access to operating procedures, internal checklists, and store support flows.",
-    icon: Store,
+      "Operational knowledge for buyer and seller support within the defined Marketplace MVP.",
+    icon: ShoppingBag,
   },
   {
-    title: "Document Administration",
+    title: "Knowledge Administration",
     description:
-      "Lets authorized users upload manuals, FAQs, policy PDFs, and process guides into the knowledge base.",
+      "Upload and manage approved knowledge documents for the academic RAG knowledge base.",
     icon: ClipboardCheck,
   },
 ];
@@ -57,29 +59,44 @@ const businessAreas = [
 export function KnowledgeCenterOverview() {
   return (
     <section className="space-y-5">
-      <div className="max-w-3xl">
-        <p className="text-sm font-medium text-primary">
-          Project 1 · Intelligent Corporate Knowledge Assistant
-        </p>
-        <h2 className="mt-2 text-3xl font-semibold tracking-normal">
-          NovaRetail Knowledge Center
-        </h2>
-        <p className="mt-3 text-muted-foreground">
-          Internal AI-powered knowledge assistant for NovaRetail employees. The
-          prototype helps teams consult corporate policies, procedures, manuals,
-          warranty rules, logistics guides, customer service flows, and internal
-          FAQs through a retrieval-augmented chat experience.
-        </p>
+      <div className="grid gap-4 rounded-[10px] border bg-card p-5 shadow-sm lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:p-6">
+        <div className="max-w-3xl">
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="text-sm font-semibold text-dark-blue">
+              Knowledge Engineering · RAG prototype
+            </p>
+            <span className="rounded-full bg-brand-yellow px-2.5 py-1 text-xs font-semibold text-dark-blue">
+              Argentina scope
+            </span>
+          </div>
+          <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
+            {APP_CONFIG.knowledgeCenterName}
+          </h2>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
+            {APP_CONFIG.subtitle} Answers are grounded in retrieved documents,
+            sources remain visible, and a human employee makes the final
+            decision.
+          </p>
+        </div>
+        <div className="flex items-center gap-3 rounded-lg bg-accent p-4 text-accent-foreground lg:max-w-xs">
+          <BadgeHelp aria-hidden="true" className="h-6 w-6 shrink-0" />
+          <p className="text-sm font-medium">
+            Scope: returns, refunds, claims, delivery incidents, and escalation.
+          </p>
+        </div>
       </div>
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {businessAreas.map((area) => {
           const Icon = area.icon;
 
           return (
-            <Card key={area.title}>
+            <Card
+              className="transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-md"
+              key={area.title}
+            >
               <CardHeader className="pb-3">
                 <div className="flex items-center gap-3">
-                  <span className="rounded-md bg-accent p-2 text-primary">
+                  <span className="rounded-md bg-brand-yellow p-2 text-dark-blue">
                     <Icon aria-hidden="true" className="h-4 w-4" />
                   </span>
                   <CardTitle className="text-base">{area.title}</CardTitle>

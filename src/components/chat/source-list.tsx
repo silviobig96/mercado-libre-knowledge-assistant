@@ -23,7 +23,7 @@ export function SourceList({ sources }: SourceListProps) {
       <button
         aria-controls={contentId}
         aria-expanded={isOpen}
-        className="flex w-full items-center justify-between gap-3 rounded-md px-0 py-1 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="flex w-full items-center justify-between gap-3 rounded-md px-0 py-1 text-left text-xs font-semibold uppercase tracking-wide text-primary transition-colors hover:text-action-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         onClick={() => setIsOpen((currentValue) => !currentValue)}
         type="button"
       >
@@ -41,7 +41,7 @@ export function SourceList({ sources }: SourceListProps) {
         <ul className="mt-2 grid gap-2" id={contentId}>
           {sources.map((source) => (
             <li
-              className="rounded-md bg-accent px-3 py-2 text-xs text-accent-foreground"
+              className="rounded-md border border-primary/15 bg-accent px-3 py-2 text-xs text-accent-foreground"
               key={`${source.id}-${source.chunkIndex}`}
             >
               <div className="flex flex-wrap items-center gap-2 font-medium">

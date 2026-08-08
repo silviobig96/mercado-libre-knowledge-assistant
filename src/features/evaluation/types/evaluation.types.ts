@@ -4,6 +4,9 @@ export type EvaluationMetrics = {
   totalQuestions: number;
   answeredWithContext: number;
   fallbackQuestions: number;
+  conversationalOrUnscoredQuestions: number;
+  sourceBackedAnswerRate: string;
+  confidenceRatedAnswers: number;
   averageResponseTime: string;
   highConfidenceAnswers: number;
   mediumConfidenceAnswers: number;

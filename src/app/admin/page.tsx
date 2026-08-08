@@ -30,7 +30,8 @@ export default async function AdminPage() {
         <div>
           <h2 className="text-xl font-semibold">Document Administration</h2>
           <p className="text-sm text-muted-foreground">
-            Manage the PDFs available to the NovaRetail RAG assistant.
+            Manage approved sources for the Argentina Marketplace and Mercado
+            Envíos academic scenario.
           </p>
         </div>
         <AdminLogoutButton />
@@ -40,9 +41,9 @@ export default async function AdminPage() {
           <CardHeader>
             <CardTitle>Document Upload</CardTitle>
             <CardDescription>
-              Upload corporate policies, manuals, FAQs, warranty procedures,
-              logistics guides, and internal process documents. These documents
-              become searchable through the RAG assistant.
+              Upload permitted public references, academic test documents, or
+              clearly simulated procedures. The prototype is not connected to
+              Mercado Libre internal systems.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -53,7 +54,8 @@ export default async function AdminPage() {
           <CardHeader>
             <CardTitle>Uploaded Documents</CardTitle>
             <CardDescription>
-              Recent documents available to the assistant.
+              Recent knowledge sources available to the assistant. Legacy
+              categories remain visible until older documents are replaced.
             </CardDescription>
           </CardHeader>
           <CardContent>

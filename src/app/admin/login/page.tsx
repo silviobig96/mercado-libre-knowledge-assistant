@@ -25,8 +25,8 @@ export default async function AdminLoginPage() {
           <CardHeader>
             <CardTitle>Admin Login</CardTitle>
             <CardDescription>
-              Enter the demo admin password to manage NovaRetail knowledge
-              documents.
+              Enter the demo admin password to manage the academic knowledge
+              corpus for Mercado Libre Argentina.
             </CardDescription>
           </CardHeader>
           <CardContent>

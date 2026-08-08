@@ -22,7 +22,7 @@ export function ChatContainer() {
       id: "initial",
       role: "assistant",
       content:
-        "Upload NovaRetail PDF documents in Admin, then ask questions about the knowledge base.",
+        "Ask a question about the approved Mercado Libre Argentina academic corpus. I will answer only from retrieved sources and will say when the knowledge base is insufficient.",
       sources: [],
     }),
     [],
@@ -79,14 +79,19 @@ export function ChatContainer() {
   }
 
   return (
-    <Card className="min-h-[calc(100vh-11rem)]">
-      <CardHeader>
-        <CardTitle>Knowledge Chat</CardTitle>
+    <Card className="min-h-[640px] overflow-hidden border-0 shadow-[0_2px_8px_rgba(0,0,0,0.10)]">
+      <CardHeader className="border-b bg-card px-4 py-4 sm:px-6">
+        <CardTitle className="flex items-center justify-between gap-3 text-base">
+          <span>Knowledge Chat</span>
+          <span className="rounded-full bg-accent px-2.5 py-1 text-xs font-medium text-accent-foreground">
+            Source-grounded RAG
+          </span>
+        </CardTitle>
       </CardHeader>
-      <CardContent className="flex min-h-[calc(100vh-16rem)] flex-col gap-4">
+      <CardContent className="flex min-h-[580px] flex-col gap-4 p-4 sm:p-6">
         <section
           aria-live="polite"
-          className="flex flex-1 flex-col gap-4 overflow-y-auto rounded-md border bg-secondary/30 p-4"
+          className="flex max-h-[520px] min-h-72 flex-1 flex-col gap-4 overflow-y-auto rounded-lg border bg-surface-subtle p-3 sm:p-4"
         >
           {messages.map((message) => (
             <ChatMessage key={message.id} message={message} />

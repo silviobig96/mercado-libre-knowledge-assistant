@@ -31,7 +31,7 @@ export default async function AdminPage() {
           <h2 className="text-xl font-semibold">Document Administration</h2>
           <p className="text-sm text-muted-foreground">
             Manage approved sources for the Argentina Marketplace and Mercado
-            Envíos academic scenario.
+            Envíos knowledge base.
           </p>
         </div>
         <AdminLogoutButton />
@@ -41,9 +41,9 @@ export default async function AdminPage() {
           <CardHeader>
             <CardTitle>Document Upload</CardTitle>
             <CardDescription>
-              Upload permitted public references, academic test documents, or
-              clearly simulated procedures. The prototype is not connected to
-              Mercado Libre internal systems.
+              Upload a permitted public reference, test document, or clearly
+              simulated procedure with explicit provenance. This prototype is
+              not connected to Mercado Libre internal systems.
             </CardDescription>
           </CardHeader>
           <CardContent>

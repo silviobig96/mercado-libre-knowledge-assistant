@@ -6,10 +6,12 @@ import { useState } from "react";
 
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { getDocumentCategoryLabel } from "@/features/documents/constants/document-categories";
 import {
-  getDocumentCategoryLabel,
-  isLegacyDocumentCategory,
-} from "@/features/documents/constants/document-categories";
+  getDocumentSourceTypeLabel,
+  getDocumentStatusLabel,
+  resolveDocumentStatus,
+} from "@/features/documents/constants/document-metadata";
 import type { DocumentRecord } from "@/features/documents/types/document.types";
 
 type DocumentListProps = {
@@ -49,6 +51,7 @@ export function DocumentList({ documents }: DocumentListProps) {
       <ul className="divide-y rounded-md border">
         {documents.map((document) => {
           const isDeleting = deletingDocumentId === document.id;
+          const resolvedStatus = resolveDocumentStatus(document);
 
           return (
             <li
@@ -65,11 +68,13 @@ export function DocumentList({ documents }: DocumentListProps) {
                     <span className="rounded-full bg-accent px-2 py-0.5 font-medium text-accent-foreground">
                       {getDocumentCategoryLabel(document.category)}
                     </span>
-                    {isLegacyDocumentCategory(document.category) && (
-                      <span className="rounded-full bg-surface-subtle px-2 py-0.5 font-medium text-warning">
-                        Legacy category
-                      </span>
-                    )}
+                    <span className="rounded-full bg-surface-subtle px-2 py-0.5 font-medium text-warning">
+                      {getDocumentStatusLabel(resolvedStatus)}
+                    </span>
+                    <span>
+                      · {getDocumentSourceTypeLabel(document.sourceType)}
+                    </span>
+                    <span>· {document.country ?? "Scope not verified"}</span>
                     <span>· {formatFileSize(document.sizeBytes)}</span>
                     <span>· {document.chunkCount} chunks</span>
                     <span>

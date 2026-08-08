@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import { ChatInput } from "@/components/chat/chat-input";
 import {
@@ -17,19 +17,7 @@ type ChatApiSuccess = ChatResponse;
 type ChatApiError = { error: string };
 
 export function ChatContainer() {
-  const initialMessage = useMemo<ChatMessageModel>(
-    () => ({
-      id: "initial",
-      role: "assistant",
-      content:
-        "Ask a question about the approved Mercado Libre Argentina academic corpus. I will answer only from retrieved sources and will say when the knowledge base is insufficient.",
-      sources: [],
-    }),
-    [],
-  );
-  const [messages, setMessages] = useState<ChatMessageModel[]>([
-    initialMessage,
-  ]);
+  const [messages, setMessages] = useState<ChatMessageModel[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -63,7 +51,7 @@ export function ChatContainer() {
           role: "assistant",
           content: payload.answer,
           confidence: payload.confidence,
-          question: payload.sources.length > 0 ? question : undefined,
+          question,
           sources: payload.sources,
         },
       ]);
@@ -79,20 +67,33 @@ export function ChatContainer() {
   }
 
   return (
-    <Card className="min-h-[640px] overflow-hidden border-0 shadow-[0_2px_8px_rgba(0,0,0,0.10)]">
+    <Card className="overflow-hidden border-0 shadow-[0_2px_8px_rgba(0,0,0,0.10)]">
       <CardHeader className="border-b bg-card px-4 py-4 sm:px-6">
-        <CardTitle className="flex items-center justify-between gap-3 text-base">
-          <span>Knowledge Chat</span>
+        <CardTitle className="flex flex-wrap items-center justify-between gap-3 text-base">
+          <span>Assistant</span>
           <span className="rounded-full bg-accent px-2.5 py-1 text-xs font-medium text-accent-foreground">
             Source-grounded RAG
           </span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex min-h-[580px] flex-col gap-4 p-4 sm:p-6">
+      <CardContent className="flex flex-col gap-4 p-4 sm:p-6">
+        <ChatInput disabled={isLoading} onSubmit={submitQuestion} />
+        <SuggestedQuestions disabled={isLoading} onSelect={submitQuestion} />
+        <div className="border-t" />
         <section
           aria-live="polite"
-          className="flex max-h-[520px] min-h-72 flex-1 flex-col gap-4 overflow-y-auto rounded-lg border bg-surface-subtle p-3 sm:p-4"
+          className="flex max-h-[560px] min-h-64 flex-col gap-4 overflow-y-auto rounded-lg bg-surface-subtle p-3 sm:p-4"
         >
+          {messages.length === 0 && (
+            <div className="m-auto max-w-md text-center">
+              <p className="font-medium">Ready for an operational question</p>
+              <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                Answers, confidence, and retrieved evidence will appear here.
+                When the sources are insufficient, the assistant will recommend
+                escalation or additional documentation.
+              </p>
+            </div>
+          )}
           {messages.map((message) => (
             <ChatMessage key={message.id} message={message} />
           ))}
@@ -104,8 +105,6 @@ export function ChatContainer() {
           )}
         </section>
         {error && <Alert variant="destructive">{error}</Alert>}
-        <SuggestedQuestions disabled={isLoading} onSelect={submitQuestion} />
-        <ChatInput disabled={isLoading} onSubmit={submitQuestion} />
       </CardContent>
     </Card>
   );

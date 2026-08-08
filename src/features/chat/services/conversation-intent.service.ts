@@ -12,10 +12,10 @@ type IntentResult =
     };
 
 const SPANISH_GREETING_RESPONSE =
-  "Hola. Soy el asistente académico de conocimiento para Mercado Libre Argentina. Puedes preguntarme sobre devoluciones, reembolsos, reclamos, Mercado Envíos, protección al comprador o procedimientos del marketplace incluidos en la base de conocimiento.";
+  "Hola. Soy el asistente de conocimiento para operaciones de Mercado Libre Argentina. Puedes preguntarme sobre devoluciones, reembolsos, reclamos, Mercado Envíos, protección al comprador o procedimientos del marketplace incluidos en la base de conocimiento.";
 
 const ENGLISH_GREETING_RESPONSE =
-  "Hello. I am the academic knowledge assistant for Mercado Libre Argentina. You can ask about returns, refunds, claims, Mercado Envíos, buyer protection, or marketplace procedures covered by the knowledge base.";
+  "Hello. I am the knowledge assistant for Mercado Libre Argentina operations. You can ask about returns, refunds, claims, Mercado Envíos, buyer protection, or marketplace procedures covered by the knowledge base.";
 
 const SPANISH_THANKS_RESPONSE =
   "Con gusto. Puedo ayudarte a consultar otra fuente aprobada sobre Marketplace o Mercado Envíos en Argentina.";

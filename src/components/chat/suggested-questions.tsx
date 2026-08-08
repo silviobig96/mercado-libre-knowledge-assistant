@@ -13,8 +13,8 @@ export function SuggestedQuestions({
   onSelect,
 }: SuggestedQuestionsProps) {
   return (
-    <section aria-label="Suggested demo questions" className="space-y-2">
-      <p className="text-sm font-medium">Suggested demo questions</p>
+    <section aria-label="Suggested questions" className="space-y-2">
+      <p className="text-sm font-medium">Suggested questions</p>
       <div className="flex flex-wrap gap-2">
         {suggestedQuestions.map((question) => (
           <Button

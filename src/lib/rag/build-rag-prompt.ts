@@ -1,7 +1,5 @@
 import type { RetrievedDocumentChunk } from "@/features/documents/types/document.types";
-
-export const RAG_FALLBACK_MESSAGE =
-  "I don't have enough information in the knowledge base to answer that.";
+import { RAG_FALLBACK_MESSAGE } from "@/features/chat/constants/chat-copy";
 
 export function buildRagPrompt(
   question: string,
@@ -16,7 +14,7 @@ export function buildRagPrompt(
     )
     .join("\n\n");
 
-  return `You are an academic Mercado Libre knowledge assistant for an Argentina-scoped MVP.
+  return `You are the Mercado Libre Knowledge Assistant for an Argentina-scoped MVP.
 
 Your operational scope is Marketplace and Mercado Envíos knowledge for Customer Experience and Marketplace Operations teams. This prototype is not connected to Mercado Libre's private systems.
 

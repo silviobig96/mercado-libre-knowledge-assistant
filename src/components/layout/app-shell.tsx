@@ -6,27 +6,26 @@ import { cn } from "@/lib/utils";
 
 type AppShellProps = {
   active:
-    | "chat"
-    | "knowledge-acquisition"
+    | "assistant"
+    | "history"
+    | "sources"
+    | "knowledge-gaps"
+    | "analytics"
     | "admin"
-    | "business-flow"
-    | "architecture"
-    | "evaluation"
-    | "demo";
+    | null;
   children: React.ReactNode;
 };
 
 const links = [
-  { href: "/", label: "Chat", key: "chat" },
+  { href: "/", label: "Assistant", key: "assistant" },
+  { href: "/history", label: "History", key: "history" },
+  { href: "/sources", label: "Sources", key: "sources" },
   {
-    href: "/knowledge-acquisition",
-    label: "Knowledge Acquisition",
-    key: "knowledge-acquisition",
+    href: "/knowledge-gaps",
+    label: "Knowledge Gaps",
+    key: "knowledge-gaps",
   },
-  { href: "/business-flow", label: "Business Flow", key: "business-flow" },
-  { href: "/architecture", label: "Architecture", key: "architecture" },
-  { href: "/evaluation", label: "Evaluation", key: "evaluation" },
-  { href: "/demo", label: "Demo", key: "demo" },
+  { href: "/analytics", label: "Analytics", key: "analytics" },
   { href: "/admin", label: "Admin", key: "admin" },
 ] as const;
 
@@ -44,7 +43,7 @@ export function AppShell({ active, children }: AppShellProps) {
                 {APP_CONFIG.productName}
               </span>
               <span className="block text-xs font-medium text-foreground/70">
-                Academic MVP · {APP_CONFIG.country}
+                {APP_CONFIG.country} MVP
               </span>
             </span>
           </Link>

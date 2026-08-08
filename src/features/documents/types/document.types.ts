@@ -1,4 +1,8 @@
 import type { DocumentCategory } from "@/features/documents/constants/document-categories";
+import type {
+  DocumentSourceType,
+  DocumentStatus,
+} from "@/features/documents/constants/document-metadata";
 
 export type DocumentRecord = {
   id: string;
@@ -8,6 +12,9 @@ export type DocumentRecord = {
   sizeBytes: number | null;
   createdAt: string;
   chunkCount: number;
+  sourceType: string | null;
+  country: string | null;
+  status: DocumentStatus | null;
 };
 
 export type DocumentChunkInsert = {
@@ -24,6 +31,9 @@ export type UploadDocumentResult = {
   documentName: string;
   category: DocumentCategory;
   chunkCount: number;
+  sourceType: DocumentSourceType;
+  country: string;
+  status: DocumentStatus;
 };
 
 export type DeleteDocumentResult = {

@@ -4,11 +4,9 @@ import { z } from "zod";
 
 import { generateEmbedding } from "@/lib/ai/embedding.service";
 import { generateAnswer } from "@/lib/ai/generation.service";
-import {
-  buildRagPrompt,
-  RAG_FALLBACK_MESSAGE,
-} from "@/lib/rag/build-rag-prompt";
+import { buildRagPrompt } from "@/lib/rag/build-rag-prompt";
 import { retrieveRelevantContext } from "@/lib/rag/retrieve-context";
+import { RAG_FALLBACK_MESSAGE } from "@/features/chat/constants/chat-copy";
 import { detectConversationIntent } from "@/features/chat/services/conversation-intent.service";
 import { saveChatQueryLog } from "@/features/chat/services/chat-query-log.service";
 import { DEFAULT_SIMILARITY_THRESHOLD } from "@/features/documents/services/document-query.service";
@@ -50,10 +48,20 @@ export async function answerQuestion(
     });
   }
 
-  const answer = await generateAnswer(buildRagPrompt(question, chunks));
+  const answer = (
+    await generateAnswer(buildRagPrompt(question, chunks))
+  ).trim();
+
+  if (!answer || answer === RAG_FALLBACK_MESSAGE) {
+    return createResponseWithQueryLog(question, startedAt, {
+      answer: RAG_FALLBACK_MESSAGE,
+      sources: [],
+      confidence: null,
+    });
+  }
 
   return createResponseWithQueryLog(question, startedAt, {
-    answer: answer || RAG_FALLBACK_MESSAGE,
+    answer,
     sources: toSources(chunks),
     confidence: getConfidenceLevel(chunks[0]?.similarity ?? 0),
   });

@@ -2,18 +2,9 @@ import { NextResponse } from "next/server";
 import { z, ZodError } from "zod";
 
 import { saveChatFeedback } from "@/features/chat/services/chat-feedback.service";
+import { chatSourceSchema } from "@/features/chat/validation/chat-source.schema";
 
 export const runtime = "nodejs";
-
-const chatSourceSchema = z.object({
-  id: z.string().min(1),
-  documentId: z.string().min(1),
-  documentName: z.string().min(1),
-  source: z.string().min(1),
-  chunkIndex: z.number().int().nonnegative(),
-  similarity: z.number(),
-  excerpt: z.string(),
-});
 
 const chatFeedbackRequestSchema = z.object({
   question: z.string().trim().min(1).max(1000),

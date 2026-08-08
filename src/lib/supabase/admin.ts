@@ -20,6 +20,9 @@ export type Database = {
           id: string;
           name: string;
           category: string;
+          source_type: string | null;
+          country: string | null;
+          status: "active" | "needs-review" | "legacy" | "inactive" | null;
           mime_type: string | null;
           size_bytes: number | null;
           created_at: string;
@@ -28,6 +31,9 @@ export type Database = {
           id?: string;
           name: string;
           category?: string;
+          source_type?: string | null;
+          country?: string | null;
+          status?: "active" | "needs-review" | "legacy" | "inactive" | null;
           mime_type?: string | null;
           size_bytes?: number | null;
           created_at?: string;

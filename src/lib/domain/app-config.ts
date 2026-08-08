@@ -6,7 +6,7 @@ export const APP_CONFIG = {
   audience: "Customer Experience and Marketplace Operations teams",
   scope: "Marketplace and Mercado Envíos operations",
   subtitle:
-    "Academic AI knowledge assistant for Marketplace and Mercado Envíos operations in Argentina.",
+    "Source-grounded operational guidance for Marketplace and Mercado Envíos teams in Argentina.",
   disclaimer:
     "Academic prototype for educational purposes. This is not an official Mercado Libre product and is not affiliated with or endorsed by Mercado Libre.",
 } as const;

@@ -1,6 +1,6 @@
 import "server-only";
 
-import { RAG_FALLBACK_MESSAGE } from "@/lib/rag/build-rag-prompt";
+import { RAG_FALLBACK_MESSAGE } from "@/features/chat/constants/chat-copy";
 import { createSupabaseAdminClient, type Json } from "@/lib/supabase/admin";
 
 import type {

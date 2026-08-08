@@ -13,6 +13,14 @@ import {
   getDocumentCategoryLabel,
   type DocumentCategory,
 } from "@/features/documents/constants/document-categories";
+import {
+  DEFAULT_DOCUMENT_COUNTRY,
+  DEFAULT_DOCUMENT_SOURCE_TYPE,
+  DOCUMENT_SOURCE_TYPES,
+  getDocumentSourceTypeLabel,
+  type DocumentSourceType,
+  type DocumentStatus,
+} from "@/features/documents/constants/document-metadata";
 
 type UploadSuccess = {
   success: true;
@@ -20,6 +28,9 @@ type UploadSuccess = {
   documentName: string;
   category: DocumentCategory;
   chunkCount: number;
+  sourceType: DocumentSourceType;
+  country: string;
+  status: DocumentStatus;
 };
 
 type UploadError = {
@@ -33,6 +44,9 @@ export function DocumentUploadForm() {
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [category, setCategory] = useState<DocumentCategory>(
     DEFAULT_DOCUMENT_CATEGORY,
+  );
+  const [sourceType, setSourceType] = useState<DocumentSourceType>(
+    DEFAULT_DOCUMENT_SOURCE_TYPE,
   );
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -50,6 +64,8 @@ export function DocumentUploadForm() {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("category", category);
+    formData.append("sourceType", sourceType);
+    formData.append("country", DEFAULT_DOCUMENT_COUNTRY);
 
     setIsUploading(true);
     setErrorMessage(null);
@@ -67,7 +83,7 @@ export function DocumentUploadForm() {
       }
 
       setSuccessMessage(
-        `${payload.documentName} uploaded as ${getDocumentCategoryLabel(payload.category)} with ${payload.chunkCount} chunks.`,
+        `${payload.documentName} uploaded as ${getDocumentCategoryLabel(payload.category)} (${getDocumentSourceTypeLabel(payload.sourceType)}) with ${payload.chunkCount} chunks.`,
       );
 
       if (inputRef.current) {
@@ -114,8 +130,8 @@ export function DocumentUploadForm() {
             </div>
           </div>
           <p className="mt-2 text-xs text-muted-foreground">
-            Text-based PDF, up to 10 MB. Use approved public, academic, or
-            clearly simulated sources only.
+            Text-based PDF, up to 10 MB. Use approved public references, test
+            documents, or clearly simulated sources only.
           </p>
         </div>
       </div>
@@ -138,6 +154,37 @@ export function DocumentUploadForm() {
             </option>
           ))}
         </select>
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-2">
+          <label className="text-sm font-medium" htmlFor="document-source-type">
+            Source type
+          </label>
+          <select
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={isUploading}
+            id="document-source-type"
+            onChange={(event) =>
+              setSourceType(event.target.value as DocumentSourceType)
+            }
+            value={sourceType}
+          >
+            {DOCUMENT_SOURCE_TYPES.map((sourceTypeOption) => (
+              <option
+                key={sourceTypeOption.value}
+                value={sourceTypeOption.value}
+              >
+                {sourceTypeOption.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="space-y-2">
+          <p className="text-sm font-medium">Country / scope</p>
+          <div className="flex h-10 items-center rounded-md border bg-surface-subtle px-3 text-sm">
+            {DEFAULT_DOCUMENT_COUNTRY}
+          </div>
+        </div>
       </div>
       <Button disabled={isUploading} type="submit">
         <Upload aria-hidden="true" className="h-4 w-4" />

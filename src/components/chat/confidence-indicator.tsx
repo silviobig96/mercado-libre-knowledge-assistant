@@ -16,7 +16,7 @@ export function ConfidenceIndicator({ confidence }: ConfidenceIndicatorProps) {
       <span
         className={cn(
           "font-medium",
-          confidence === "High" && "text-primary",
+          confidence === "High" && "text-success",
           confidence === "Medium" && "text-foreground",
           confidence === "Low" && "text-destructive",
         )}

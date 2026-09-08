@@ -24,7 +24,11 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = await ingestPdfDocument(file, formData.get("category"));
+    const result = await ingestPdfDocument(file, {
+      category: formData.get("category"),
+      sourceType: formData.get("sourceType"),
+      country: formData.get("country"),
+    });
 
     return NextResponse.json(result);
   } catch (error) {

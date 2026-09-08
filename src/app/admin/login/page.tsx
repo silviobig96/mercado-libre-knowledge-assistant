@@ -25,8 +25,8 @@ export default async function AdminLoginPage() {
           <CardHeader>
             <CardTitle>Admin Login</CardTitle>
             <CardDescription>
-              Enter the demo admin password to manage NovaRetail knowledge
-              documents.
+              Enter the administrator password to manage approved knowledge
+              sources for the Argentina MVP.
             </CardDescription>
           </CardHeader>
           <CardContent>

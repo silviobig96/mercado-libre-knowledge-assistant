@@ -13,6 +13,13 @@ import {
   isDocumentCategory,
   type DocumentCategory,
 } from "@/features/documents/constants/document-categories";
+import {
+  DEFAULT_DOCUMENT_COUNTRY,
+  DEFAULT_DOCUMENT_SOURCE_TYPE,
+  DEFAULT_DOCUMENT_STATUS,
+  isDocumentSourceType,
+  type DocumentSourceType,
+} from "@/features/documents/constants/document-metadata";
 import type {
   DocumentChunkInsert,
   UploadDocumentResult,
@@ -22,10 +29,16 @@ const MAX_PDF_SIZE_BYTES = 10 * 1024 * 1024;
 
 export async function ingestPdfDocument(
   file: File,
-  categoryInput: unknown = DEFAULT_DOCUMENT_CATEGORY,
+  metadataInput: {
+    category?: unknown;
+    sourceType?: unknown;
+    country?: unknown;
+  } = {},
 ): Promise<UploadDocumentResult> {
   validatePdfFile(file);
-  const category = parseDocumentCategory(categoryInput);
+  const category = parseDocumentCategory(metadataInput.category);
+  const sourceType = parseDocumentSourceType(metadataInput.sourceType);
+  const country = parseDocumentCountry(metadataInput.country);
 
   const buffer = Buffer.from(await file.arrayBuffer());
   const extractedText = await extractPdfText(buffer);
@@ -46,10 +59,13 @@ export async function ingestPdfDocument(
     .insert({
       name: file.name,
       category,
+      source_type: sourceType,
+      country,
+      status: DEFAULT_DOCUMENT_STATUS,
       mime_type: file.type || "application/pdf",
       size_bytes: file.size,
     })
-    .select("id, name, category")
+    .select("id, name, category, source_type, country, status")
     .single();
 
   if (documentError) {
@@ -93,6 +109,9 @@ export async function ingestPdfDocument(
     documentName: document.name,
     category: parseDocumentCategory(document.category),
     chunkCount: chunks.length,
+    sourceType: parseDocumentSourceType(document.source_type),
+    country: parseDocumentCountry(document.country),
+    status: document.status ?? DEFAULT_DOCUMENT_STATUS,
   };
 }
 
@@ -123,4 +142,30 @@ function parseDocumentCategory(category: unknown): DocumentCategory {
   }
 
   throw new Error("Invalid document category.");
+}
+
+function parseDocumentSourceType(sourceType: unknown): DocumentSourceType {
+  if (isDocumentSourceType(sourceType)) {
+    return sourceType;
+  }
+
+  if (sourceType === null || sourceType === undefined || sourceType === "") {
+    return DEFAULT_DOCUMENT_SOURCE_TYPE;
+  }
+
+  throw new Error("Invalid document source type.");
+}
+
+function parseDocumentCountry(country: unknown): string {
+  if (country === null || country === undefined || country === "") {
+    return DEFAULT_DOCUMENT_COUNTRY;
+  }
+
+  if (country === DEFAULT_DOCUMENT_COUNTRY) {
+    return country;
+  }
+
+  throw new Error(
+    "This MVP currently accepts Argentina-scoped documents only.",
+  );
 }

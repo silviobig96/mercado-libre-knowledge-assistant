@@ -10,8 +10,17 @@ import { Input } from "@/components/ui/input";
 import {
   DEFAULT_DOCUMENT_CATEGORY,
   DOCUMENT_CATEGORIES,
+  getDocumentCategoryLabel,
   type DocumentCategory,
 } from "@/features/documents/constants/document-categories";
+import {
+  DEFAULT_DOCUMENT_COUNTRY,
+  DEFAULT_DOCUMENT_SOURCE_TYPE,
+  DOCUMENT_SOURCE_TYPES,
+  getDocumentSourceTypeLabel,
+  type DocumentSourceType,
+  type DocumentStatus,
+} from "@/features/documents/constants/document-metadata";
 
 type UploadSuccess = {
   success: true;
@@ -19,6 +28,9 @@ type UploadSuccess = {
   documentName: string;
   category: DocumentCategory;
   chunkCount: number;
+  sourceType: DocumentSourceType;
+  country: string;
+  status: DocumentStatus;
 };
 
 type UploadError = {
@@ -32,6 +44,9 @@ export function DocumentUploadForm() {
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [category, setCategory] = useState<DocumentCategory>(
     DEFAULT_DOCUMENT_CATEGORY,
+  );
+  const [sourceType, setSourceType] = useState<DocumentSourceType>(
+    DEFAULT_DOCUMENT_SOURCE_TYPE,
   );
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -49,6 +64,8 @@ export function DocumentUploadForm() {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("category", category);
+    formData.append("sourceType", sourceType);
+    formData.append("country", DEFAULT_DOCUMENT_COUNTRY);
 
     setIsUploading(true);
     setErrorMessage(null);
@@ -66,7 +83,7 @@ export function DocumentUploadForm() {
       }
 
       setSuccessMessage(
-        `${payload.documentName} uploaded as ${payload.category} with ${payload.chunkCount} chunks.`,
+        `${payload.documentName} uploaded as ${getDocumentCategoryLabel(payload.category)} (${getDocumentSourceTypeLabel(payload.sourceType)}) with ${payload.chunkCount} chunks.`,
       );
 
       if (inputRef.current) {
@@ -87,29 +104,35 @@ export function DocumentUploadForm() {
   }
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit}>
+    <form className="space-y-5" onSubmit={handleSubmit}>
       <div className="space-y-2">
         <label className="text-sm font-medium" htmlFor="pdf-file">
           PDF document
         </label>
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <Input
-            accept="application/pdf,.pdf"
-            className="sr-only"
-            disabled={isUploading}
-            id="pdf-file"
-            onChange={(event) =>
-              setSelectedFileName(event.target.files?.[0]?.name ?? null)
-            }
-            ref={inputRef}
-            type="file"
-          />
-          <Button asChild className="cursor-pointer" variant="outline">
-            <label htmlFor="pdf-file">Choose PDF file</label>
-          </Button>
-          <div className="flex min-h-10 flex-1 items-center rounded-md border bg-background px-3 py-2 text-sm text-muted-foreground">
-            {selectedFileName ?? "No file selected"}
+        <div className="rounded-lg border-2 border-dashed border-primary/25 bg-accent/30 p-4">
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Input
+              accept="application/pdf,.pdf"
+              className="sr-only"
+              disabled={isUploading}
+              id="pdf-file"
+              onChange={(event) =>
+                setSelectedFileName(event.target.files?.[0]?.name ?? null)
+              }
+              ref={inputRef}
+              type="file"
+            />
+            <Button asChild className="cursor-pointer" variant="outline">
+              <label htmlFor="pdf-file">Choose PDF file</label>
+            </Button>
+            <div className="flex min-h-10 flex-1 items-center rounded-md border bg-background px-3 py-2 text-sm text-muted-foreground">
+              {selectedFileName ?? "No file selected"}
+            </div>
           </div>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Text-based PDF, up to 10 MB. Use approved public references, test
+            documents, or clearly simulated sources only.
+          </p>
         </div>
       </div>
       <div className="space-y-2">
@@ -126,11 +149,42 @@ export function DocumentUploadForm() {
           value={category}
         >
           {DOCUMENT_CATEGORIES.map((categoryOption) => (
-            <option key={categoryOption} value={categoryOption}>
-              {categoryOption}
+            <option key={categoryOption.value} value={categoryOption.value}>
+              {categoryOption.label}
             </option>
           ))}
         </select>
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-2">
+          <label className="text-sm font-medium" htmlFor="document-source-type">
+            Source type
+          </label>
+          <select
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={isUploading}
+            id="document-source-type"
+            onChange={(event) =>
+              setSourceType(event.target.value as DocumentSourceType)
+            }
+            value={sourceType}
+          >
+            {DOCUMENT_SOURCE_TYPES.map((sourceTypeOption) => (
+              <option
+                key={sourceTypeOption.value}
+                value={sourceTypeOption.value}
+              >
+                {sourceTypeOption.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="space-y-2">
+          <p className="text-sm font-medium">Country / scope</p>
+          <div className="flex h-10 items-center rounded-md border bg-surface-subtle px-3 text-sm">
+            {DEFAULT_DOCUMENT_COUNTRY}
+          </div>
+        </div>
       </div>
       <Button disabled={isUploading} type="submit">
         <Upload aria-hidden="true" className="h-4 w-4" />

@@ -6,7 +6,8 @@ import { cookies } from "next/headers";
 
 import { getServerEnv } from "@/lib/validation/env";
 
-const ADMIN_SESSION_COOKIE = "novaretail_admin_session";
+const ADMIN_SESSION_COOKIE = "meli_knowledge_admin_session";
+const LEGACY_ADMIN_SESSION_COOKIE = "novaretail_admin_session";
 const SESSION_DURATION_SECONDS = 60 * 60 * 8;
 
 export class UnauthorizedAdminError extends Error {
@@ -18,7 +19,9 @@ export class UnauthorizedAdminError extends Error {
 
 export async function isAdminAuthenticated(): Promise<boolean> {
   const cookieStore = await cookies();
-  const token = cookieStore.get(ADMIN_SESSION_COOKIE)?.value;
+  const token =
+    cookieStore.get(ADMIN_SESSION_COOKIE)?.value ??
+    cookieStore.get(LEGACY_ADMIN_SESSION_COOKIE)?.value;
 
   if (!token) {
     return false;
@@ -52,6 +55,14 @@ export async function clearAdminSessionCookie(): Promise<void> {
   const cookieStore = await cookies();
 
   cookieStore.set(ADMIN_SESSION_COOKIE, "", {
+    expires: new Date(0),
+    httpOnly: true,
+    path: "/",
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  });
+
+  cookieStore.set(LEGACY_ADMIN_SESSION_COOKIE, "", {
     expires: new Date(0),
     httpOnly: true,
     path: "/",
